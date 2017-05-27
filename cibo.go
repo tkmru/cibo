@@ -15,6 +15,8 @@ type Registers struct {
 	EBP uint32
 	ESI uint32
 	EDI uint32
+  // Instruction Register
+  EIP uint32
 	// Segment Register
 	GS uint16
 	FS uint16
@@ -26,18 +28,31 @@ type Registers struct {
 	EFLAGS uint32
 }
 
-func (r Registers) dump() {
-	s := reflect.ValueOf(&r).Elem()
-	typeOfT := s.Type()
+func (r *Registers) init() {
+  v := reflect.ValueOf(r).Elem()
+	for i := 0; i < v.NumField(); i++ {
+    f := v.Field(i)
+    switch f.Kind() {
+		case reflect.Uint16:
+      f.Set(reflect.ValueOf(uint16(0)))
+		case reflect.Uint32:
+			f.Set(reflect.ValueOf(uint32(0)))
+		}
+	}
+}
 
-	for i := 0; i < s.NumField(); i++ {
-		f := s.Field(i)
+func (r Registers) dump() {
+	v := reflect.ValueOf(&r).Elem()
+	t := v.Type()
+
+	for i := 0; i < v.NumField(); i++ {
 		fmt.Printf("%d: %s = %v\n",
-			i, typeOfT.Field(i).Name, f.Interface())
+			i + 1, t.Field(i).Name, v.Field(i).Interface())
 	}
 }
 
 func main() {
 	r := Registers{}
+  r.init()
 	r.dump()
 }
