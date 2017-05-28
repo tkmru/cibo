@@ -1,7 +1,7 @@
 package main
 
 import (
-  "fmt"
+	"fmt"
 	"reflect"
 )
 
@@ -15,8 +15,8 @@ type Registers struct {
 	EBP uint32
 	ESI uint32
 	EDI uint32
-  // Instruction Register
-  EIP uint32
+	// Instruction Register
+	EIP uint32
 	// Segment Register
 	GS uint16
 	FS uint16
@@ -29,14 +29,21 @@ type Registers struct {
 }
 
 func (r *Registers) init() {
-  v := reflect.ValueOf(r).Elem()
+	v := reflect.ValueOf(r).Elem()
+	t := v.Type()
+
 	for i := 0; i < v.NumField(); i++ {
-    f := v.Field(i)
-    switch f.Kind() {
+		f := v.Field(i)
+		switch f.Kind() {
 		case reflect.Uint16:
-      f.Set(reflect.ValueOf(uint16(0)))
+			f.Set(reflect.ValueOf(uint16(0)))
 		case reflect.Uint32:
-			f.Set(reflect.ValueOf(uint32(0)))
+			if t.Field(i).Name == "EFLAGS" {
+				// Reserved 1st bit, it's always 1 in EFLAGS.
+				f.Set(reflect.ValueOf(uint32(2)))
+			} else {
+				f.Set(reflect.ValueOf(uint32(0)))
+			}
 		}
 	}
 }
@@ -47,12 +54,12 @@ func (r Registers) dump() {
 
 	for i := 0; i < v.NumField(); i++ {
 		fmt.Printf("%d: %s = %v\n",
-			i + 1, t.Field(i).Name, v.Field(i).Interface())
+			i+1, t.Field(i).Name, v.Field(i).Interface())
 	}
 }
 
 func main() {
 	r := Registers{}
-  r.init()
+	r.init()
 	r.dump()
 }
