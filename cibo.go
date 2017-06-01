@@ -53,8 +53,17 @@ func (r Registers) dump() {
 	t := v.Type()
 
 	for i := 0; i < v.NumField(); i++ {
-		fmt.Printf("%d: %s = %v\n",
-			i+1, t.Field(i).Name, v.Field(i).Interface())
+		registerName := t.Field(i).Name
+		registerValue := v.Field(i).Interface()
+
+		switch registerName {
+		case "EFLAGS":
+			fmt.Printf("%d: %s = %d (%032b)\n",
+				i+1, registerName, registerValue, registerValue)
+		default:
+			fmt.Printf("%d: %s = %d\n",
+				i+1, registerName, registerValue)
+		}
 	}
 }
 
