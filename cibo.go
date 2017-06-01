@@ -72,9 +72,19 @@ func (r *Registers) setCF() {
 	r.EFLAGS = r.EFLAGS | 1
 }
 
+func (r *Registers) removeCF() {
+	// Carry Flag (0 bit)
+	r.EFLAGS = r.EFLAGS ^ 1
+}
+
 func (r *Registers) setPF() {
 	// Parity Flag (2bit)
 	r.EFLAGS = r.EFLAGS | 4
+}
+
+func (r *Registers) removePF() {
+	// Parity Flag (2bit)
+	r.EFLAGS = r.EFLAGS ^ 4
 }
 
 func (r *Registers) setAF() {
@@ -82,9 +92,19 @@ func (r *Registers) setAF() {
 	r.EFLAGS = r.EFLAGS | 16
 }
 
+func (r *Registers) removeAF() {
+	// Adjust Flag (4bit)
+	r.EFLAGS = r.EFLAGS ^ 16
+}
+
 func (r *Registers) setZF() {
 	// Zero Flag (6bit)
 	r.EFLAGS = r.EFLAGS | 64
+}
+
+func (r *Registers) removeZF() {
+	// Zero Flag (6bit)
+	r.EFLAGS = r.EFLAGS ^ 64
 }
 
 func (r *Registers) setSF() {
@@ -92,9 +112,19 @@ func (r *Registers) setSF() {
 	r.EFLAGS = r.EFLAGS | 128
 }
 
+func (r *Registers) removeSF() {
+	// Sign Flag (7bit)
+	r.EFLAGS = r.EFLAGS ^ 128
+}
+
 func (r *Registers) setTF() {
 	// Trap Flag (8bit)
 	r.EFLAGS = r.EFLAGS | 256
+}
+
+func (r *Registers) removeTF() {
+	// Trap Flag (8bit)
+	r.EFLAGS = r.EFLAGS ^ 256
 }
 
 func (r *Registers) setIF() {
@@ -102,9 +132,19 @@ func (r *Registers) setIF() {
 	r.EFLAGS = r.EFLAGS | 512
 }
 
+func (r *Registers) removeIF() {
+	// Interrupt Enable Flag (9bit)
+	r.EFLAGS = r.EFLAGS ^ 512
+}
+
 func (r *Registers) setDF() {
 	// Direction Flag (10bit)
 	r.EFLAGS = r.EFLAGS | 1024
+}
+
+func (r *Registers) removeDF() {
+	// Direction Flag (10bit)
+	r.EFLAGS = r.EFLAGS ^ 1024
 }
 
 func (r *Registers) setOF() {
@@ -112,9 +152,19 @@ func (r *Registers) setOF() {
 	r.EFLAGS = r.EFLAGS | 2048
 }
 
+func (r *Registers) removeOF() {
+	// Overflow Flag (11bit)
+	r.EFLAGS = r.EFLAGS ^ 2048
+}
+
 func (r *Registers) setIOPL() {
 	// I/O Privilege Level Field (12-13bit)
 	r.EFLAGS = r.EFLAGS | 4096 // TODO: fix later
+}
+
+func (r *Registers) removeIOPL() {
+	// I/O Privilege Level Field (12-13bit)
+	r.EFLAGS = r.EFLAGS ^ 4096 // TODO: fix later
 }
 
 func (r *Registers) setNT() {
@@ -122,9 +172,19 @@ func (r *Registers) setNT() {
 	r.EFLAGS = r.EFLAGS | 16384
 }
 
+func (r *Registers) removeNT() {
+	// Nested Task Flag (14bit)
+	r.EFLAGS = r.EFLAGS ^ 16384
+}
+
 func (r *Registers) setRF() {
 	// Resume Flag (16bit)
 	r.EFLAGS = r.EFLAGS | 65536
+}
+
+func (r *Registers) removeRF() {
+	// Resume Flag (16bit)
+	r.EFLAGS = r.EFLAGS ^ 65536
 }
 
 func (r *Registers) setVM() {
@@ -132,9 +192,19 @@ func (r *Registers) setVM() {
 	r.EFLAGS = r.EFLAGS | 131072
 }
 
+func (r *Registers) removeVM() {
+	// Virtual x86 Mode Flag (17bit)
+	r.EFLAGS = r.EFLAGS ^ 131072
+}
+
 func (r *Registers) setAC() {
 	// Alignment Check Flag (18bit)
 	r.EFLAGS = r.EFLAGS | 262144
+}
+
+func (r *Registers) removeAC() {
+	// Alignment Check Flag (18bit)
+	r.EFLAGS = r.EFLAGS ^ 262144
 }
 
 func (r *Registers) setVIF() {
@@ -142,9 +212,19 @@ func (r *Registers) setVIF() {
 	r.EFLAGS = r.EFLAGS | 524288
 }
 
+func (r *Registers) removeVIF() {
+	// Virtual Interrupt Flag (19bit)
+	r.EFLAGS = r.EFLAGS ^ 524288
+}
+
 func (r *Registers) setVIP() {
 	// Virtual Interrupt Pending Flag (20bit)
 	r.EFLAGS = r.EFLAGS | 1048576
+}
+
+func (r *Registers) removeVIP() {
+	// Virtual Interrupt Pending Flag (20bit)
+	r.EFLAGS = r.EFLAGS ^ 1048576
 }
 
 func (r *Registers) setID() {
@@ -152,10 +232,13 @@ func (r *Registers) setID() {
 	r.EFLAGS = r.EFLAGS | 2097152
 }
 
+func (r *Registers) removeID() {
+	// Identification Flag (21bit)
+	r.EFLAGS = r.EFLAGS ^ 2097152
+}
+
 func main() {
 	r := Registers{}
 	r.init()
-	r.setCF()
-	r.setTF()
 	r.dump()
 }
