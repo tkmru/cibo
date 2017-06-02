@@ -1,4 +1,4 @@
-package main
+package cibo
 
 import (
 	"fmt"
@@ -28,7 +28,7 @@ type Registers struct {
 	EFLAGS uint32
 }
 
-func (r *Registers) init() {
+func (r *Registers) Init() {
 	v := reflect.ValueOf(r).Elem()
 	t := v.Type()
 
@@ -48,7 +48,7 @@ func (r *Registers) init() {
 	}
 }
 
-func (r Registers) dump() {
+func (r Registers) Dump() {
 	v := reflect.ValueOf(&r).Elem()
 	t := v.Type()
 
@@ -235,10 +235,4 @@ func (r *Registers) setID() {
 func (r *Registers) removeID() {
 	// Identification Flag (21bit)
 	r.EFLAGS = r.EFLAGS ^ 2097152
-}
-
-func main() {
-	r := Registers{}
-	r.init()
-	r.dump()
 }
