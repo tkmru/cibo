@@ -5,7 +5,8 @@ import (
 )
 
 func main() {
-	r := cibo.Registers{}
+	c := cibo.CPU{}
+	r := c.Registers
 	r.Init()
 	r.Dump()
 }
