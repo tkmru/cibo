@@ -1,6 +1,6 @@
 package cibo
 
 type CPU struct {
-  // Memory
+  Memory
   Registers
 }
