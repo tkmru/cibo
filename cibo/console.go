@@ -1,4 +1,4 @@
-package nes
+package cibo
 
 type Console struct {
 	CPU

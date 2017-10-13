@@ -1,5 +1,7 @@
 package cibo
 
+import "log"
+
 type Memory struct {
 	RAM []byte
 }
