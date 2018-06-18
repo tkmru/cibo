@@ -1,16 +1,22 @@
 package cibo
 
-import "log"
-
-type Memory struct {
-	RAM []byte
+type Memory interface {
+	Read(address uint64) byte
+	Write(address uint64, value byte)
 }
 
-func (m *Memory) Read(address uint64) byte {
-  log.Printf("read")
-	return 0
+type cpuMemory struct {
+	console *Console
 }
 
-func (m *Memory) Write(address uint64, value byte) {
-	log.Printf("write")
+func (mem *cpuMemory) Read(address uint64) byte {
+	return mem.console.RAM[address]
+}
+
+func (mem *cpuMemory) Write(address uint64, value byte) {
+	mem.console.RAM[address] = value
+}
+
+func NewCPUMemory(console *Console) Memory {
+	return &cpuMemory{console}
 }
