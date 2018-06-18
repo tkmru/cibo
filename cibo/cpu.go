@@ -10,7 +10,9 @@ type CPU struct {
 func NewCPU(console *Console) *CPU {
 	cpu := CPU{Memory: NewCPUMemory(console)}
   cpu.Write(0, 1)
-  val := cpu.Read(0)
+  cpu.Write(1, 2)
+  cpu.Write(2, 3)
+  val := cpu.Read(0, 3)
   fmt.Print(val)
 	return &cpu
 }
