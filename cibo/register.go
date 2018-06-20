@@ -110,172 +110,226 @@ func (r Registers) Dump() {
 	}
 }
 
-func (r *Registers) setCF() {
-	// Carry Flag (0 bit)
+// FLAGS Register
+// Carry Flag (0 bit)
+func (r *Registers) IsCF() bool {
+	return (r.RFLAGS & 1) != 0
+}
+
+func (r *Registers) SetCF() {
 	r.RFLAGS = r.RFLAGS | 1
 }
 
-func (r *Registers) removeCF() {
-	// Carry Flag (0 bit)
+func (r *Registers) RemoveCF() {
 	r.RFLAGS = r.RFLAGS ^ 1
 }
 
-func (r *Registers) setPF() {
-	// Parity Flag (2bit)
+// Parity Flag (2bit)
+func (r *Registers) IsPF() bool {
+	return (r.RFLAGS & 4) != 0
+}
+
+func (r *Registers) SetPF() {
 	r.RFLAGS = r.RFLAGS | 4
 }
 
-func (r *Registers) removePF() {
-	// Parity Flag (2bit)
+func (r *Registers) RemovePF() {
 	r.RFLAGS = r.RFLAGS ^ 4
 }
 
-func (r *Registers) setAF() {
-	// Adjust Flag (4bit)
+
+// Adjust Flag (4bit)
+func (r *Registers) IsAF() bool {
+	return (r.RFLAGS & 16) != 0
+}
+
+func (r *Registers) SetAF() {
 	r.RFLAGS = r.RFLAGS | 16
 }
 
-func (r *Registers) removeAF() {
-	// Adjust Flag (4bit)
+func (r *Registers) RemoveAF() {
 	r.RFLAGS = r.RFLAGS ^ 16
 }
 
-func (r *Registers) setZF() {
-	// Zero Flag (6bit)
+
+// Zero Flag (6bit)
+func (r *Registers) IsZF() bool {
+	return (r.RFLAGS & 64) != 0
+}
+
+func (r *Registers) SetZF() {
 	r.RFLAGS = r.RFLAGS | 64
 }
 
-func (r *Registers) removeZF() {
-	// Zero Flag (6bit)
+func (r *Registers) RemoveZF() {
 	r.RFLAGS = r.RFLAGS ^ 64
 }
 
-func (r *Registers) setSF() {
-	// Sign Flag (7bit)
+// Sign Flag (7bit)
+func (r *Registers) IsSF() bool {
+	return (r.RFLAGS & 128) != 0
+}
+
+func (r *Registers) SetSF() {
 	r.RFLAGS = r.RFLAGS | 128
 }
 
-func (r *Registers) removeSF() {
-	// Sign Flag (7bit)
+func (r *Registers) RemoveSF() {
 	r.RFLAGS = r.RFLAGS ^ 128
 }
 
-func (r *Registers) setTF() {
-	// Trap Flag (8bit)
+// Trap Flag (8bit)
+func (r *Registers) IsTF() bool {
+	return (r.RFLAGS & 256) != 0
+}
+
+func (r *Registers) SetTF() {
 	r.RFLAGS = r.RFLAGS | 256
 }
 
-func (r *Registers) removeTF() {
-	// Trap Flag (8bit)
+func (r *Registers) RemoveTF() {
 	r.RFLAGS = r.RFLAGS ^ 256
 }
 
-func (r *Registers) setIF() {
-	// Interrupt Enable Flag (9bit)
+// Interrupt Enable Flag (9bit)
+func (r *Registers) IsEF() bool {
+	return (r.RFLAGS & 512) != 0
+}
+
+func (r *Registers) SetIF() {
 	r.RFLAGS = r.RFLAGS | 512
 }
 
-func (r *Registers) removeIF() {
-	// Interrupt Enable Flag (9bit)
+func (r *Registers) RemoveIF() {
 	r.RFLAGS = r.RFLAGS ^ 512
 }
 
-func (r *Registers) setDF() {
-	// Direction Flag (10bit)
+// Direction Flag (10bit)
+func (r *Registers) IsDF() bool {
+	return (r.RFLAGS & 1024) != 0
+}
+
+func (r *Registers) SetDF() {
 	r.RFLAGS = r.RFLAGS | 1024
 }
 
-func (r *Registers) removeDF() {
-	// Direction Flag (10bit)
+func (r *Registers) RemoveDF() {
 	r.RFLAGS = r.RFLAGS ^ 1024
 }
 
-func (r *Registers) setOF() {
-	// Overflow Flag (11bit)
+// Overflow Flag (11bit)
+func (r *Registers) IsOF() bool {
+	return (r.RFLAGS & 2048) != 0
+}
+
+func (r *Registers) SetOF() {
 	r.RFLAGS = r.RFLAGS | 2048
 }
 
-func (r *Registers) removeOF() {
-	// Overflow Flag (11bit)
+func (r *Registers) RemoveOF() {
 	r.RFLAGS = r.RFLAGS ^ 2048
 }
 
-func (r *Registers) setIOPL() {
-	// I/O Privilege Level Field (12-13bit)
+// I/O Privilege Level Field (12-13bit)
+func (r *Registers) IsIOPL() bool {
+	return (r.RFLAGS & 4096) != 0
+}
+
+func (r *Registers) SetIOPL() {
 	r.RFLAGS = r.RFLAGS | 4096 // TODO: fix later
 }
 
-func (r *Registers) removeIOPL() {
-	// I/O Privilege Level Field (12-13bit)
+func (r *Registers) RemoveIOPL() {
 	r.RFLAGS = r.RFLAGS ^ 4096 // TODO: fix later
 }
 
-func (r *Registers) setNT() {
-	// Nested Task Flag (14bit)
+// Nested Task Flag (14bit)
+func (r *Registers) IsNT() bool {
+	return (r.RFLAGS & 16384) != 0
+}
+
+func (r *Registers) SetNT() {
 	r.RFLAGS = r.RFLAGS | 16384
 }
 
-func (r *Registers) removeNT() {
-	// Nested Task Flag (14bit)
+func (r *Registers) RemoveNT() {
 	r.RFLAGS = r.RFLAGS ^ 16384
 }
 
-func (r *Registers) setRF() {
-	// Resume Flag (16bit)
+// Resume Flag (16bit)
+func (r *Registers) IsRF() bool {
+	return (r.RFLAGS & 65536) != 0
+}
+
+func (r *Registers) SetRF() {
 	r.RFLAGS = r.RFLAGS | 65536
 }
 
-func (r *Registers) removeRF() {
-	// Resume Flag (16bit)
+func (r *Registers) RemoveRF() {
 	r.RFLAGS = r.RFLAGS ^ 65536
 }
 
-func (r *Registers) setVM() {
-	// Virtual x86 Mode Flag (17bit)
+// Virtual x86 Mode Flag (17bit)
+func (r *Registers) IsVM() bool {
+	return (r.RFLAGS & 131072) != 0
+}
+
+func (r *Registers) SetVM() {
 	r.RFLAGS = r.RFLAGS | 131072
 }
 
-func (r *Registers) removeVM() {
-	// Virtual x86 Mode Flag (17bit)
+func (r *Registers) RemoveVM() {
 	r.RFLAGS = r.RFLAGS ^ 131072
 }
 
-func (r *Registers) setAC() {
-	// Alignment Check Flag (18bit)
+// Alignment Check Flag (18bit)
+func (r *Registers) IsAC() bool {
+	return (r.RFLAGS & 262144) != 0
+}
+
+func (r *Registers) SetAC() {
 	r.RFLAGS = r.RFLAGS | 262144
 }
 
-func (r *Registers) removeAC() {
-	// Alignment Check Flag (18bit)
+func (r *Registers) RemoveAC() {
 	r.RFLAGS = r.RFLAGS ^ 262144
 }
 
-func (r *Registers) setVIF() {
-	// Virtual Interrupt Flag (19bit)
+// Virtual Interrupt Flag (19bit)
+func (r *Registers) IsVIF() bool {
+	return (r.RFLAGS & 524288) != 0
+}
+
+func (r *Registers) SetVIF() {
 	r.RFLAGS = r.RFLAGS | 524288
 }
 
-func (r *Registers) removeVIF() {
-	// Virtual Interrupt Flag (19bit)
+func (r *Registers) RemoveVIF() {
 	r.RFLAGS = r.RFLAGS ^ 524288
 }
 
-func (r *Registers) setVIP() {
-	// Virtual Interrupt Pending Flag (20bit)
+// Virtual Interrupt Pending Flag (20bit)
+func (r *Registers) IsVIP() bool {
+	return (r.RFLAGS & 1048576) != 0
+}
+
+func (r *Registers) SetVIP() {
 	r.RFLAGS = r.RFLAGS | 1048576
 }
 
-func (r *Registers) removeVIP() {
-	// Virtual Interrupt Pending Flag (20bit)
+func (r *Registers) RemoveVIP() {
 	r.RFLAGS = r.RFLAGS ^ 1048576
 }
 
-func (r *Registers) setID() {
-	// Identification Flag (21bit)
+// Identification Flag (21bit)
+func (r *Registers) IsID() bool {
+	return (r.RFLAGS & 2097152) != 0
+}
+
+func (r *Registers) SetID() {
 	r.RFLAGS = r.RFLAGS | 2097152
 }
 
-func (r *Registers) removeID() {
-	// Identification Flag (21bit)
+func (r *Registers) RemoveID() {
 	r.RFLAGS = r.RFLAGS ^ 2097152
 }
