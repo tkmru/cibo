@@ -5,12 +5,12 @@ import (
 	"reflect"
 )
 
-type Registers struct {
+type X64registers struct {
 	// GPR
 	RAX uint64
-	RBX uint64
 	RCX uint64
 	RDX uint64
+	RBX uint64
 	RSP uint64
 	RBP uint64
 	RSI uint64
@@ -67,7 +67,7 @@ type Registers struct {
   IA32_EFER uint64
 }
 
-func (r *Registers) Init() {
+func (r *X64registers) Init() {
 	v := reflect.ValueOf(r).Elem()
 	t := v.Type()
 
@@ -91,7 +91,7 @@ func (r *Registers) Init() {
 	}
 }
 
-func (r Registers) Dump() {
+func (r X64registers) Dump() {
 	v := reflect.ValueOf(&r).Elem()
 	t := v.Type()
 
@@ -112,224 +112,224 @@ func (r Registers) Dump() {
 
 // FLAGS Register
 // Carry Flag (0 bit)
-func (r *Registers) IsCF() bool {
+func (r *X64registers) IsCF() bool {
 	return (r.RFLAGS & 1) != 0
 }
 
-func (r *Registers) SetCF() {
+func (r *X64registers) SetCF() {
 	r.RFLAGS = r.RFLAGS | 1
 }
 
-func (r *Registers) RemoveCF() {
+func (r *X64registers) RemoveCF() {
 	r.RFLAGS = r.RFLAGS ^ 1
 }
 
 // Parity Flag (2bit)
-func (r *Registers) IsPF() bool {
+func (r *X64registers) IsPF() bool {
 	return (r.RFLAGS & 4) != 0
 }
 
-func (r *Registers) SetPF() {
+func (r *X64registers) SetPF() {
 	r.RFLAGS = r.RFLAGS | 4
 }
 
-func (r *Registers) RemovePF() {
+func (r *X64registers) RemovePF() {
 	r.RFLAGS = r.RFLAGS ^ 4
 }
 
 
 // Adjust Flag (4bit)
-func (r *Registers) IsAF() bool {
+func (r *X64registers) IsAF() bool {
 	return (r.RFLAGS & 16) != 0
 }
 
-func (r *Registers) SetAF() {
+func (r *X64registers) SetAF() {
 	r.RFLAGS = r.RFLAGS | 16
 }
 
-func (r *Registers) RemoveAF() {
+func (r *X64registers) RemoveAF() {
 	r.RFLAGS = r.RFLAGS ^ 16
 }
 
 
 // Zero Flag (6bit)
-func (r *Registers) IsZF() bool {
+func (r *X64registers) IsZF() bool {
 	return (r.RFLAGS & 64) != 0
 }
 
-func (r *Registers) SetZF() {
+func (r *X64registers) SetZF() {
 	r.RFLAGS = r.RFLAGS | 64
 }
 
-func (r *Registers) RemoveZF() {
+func (r *X64registers) RemoveZF() {
 	r.RFLAGS = r.RFLAGS ^ 64
 }
 
 // Sign Flag (7bit)
-func (r *Registers) IsSF() bool {
+func (r *X64registers) IsSF() bool {
 	return (r.RFLAGS & 128) != 0
 }
 
-func (r *Registers) SetSF() {
+func (r *X64registers) SetSF() {
 	r.RFLAGS = r.RFLAGS | 128
 }
 
-func (r *Registers) RemoveSF() {
+func (r *X64registers) RemoveSF() {
 	r.RFLAGS = r.RFLAGS ^ 128
 }
 
 // Trap Flag (8bit)
-func (r *Registers) IsTF() bool {
+func (r *X64registers) IsTF() bool {
 	return (r.RFLAGS & 256) != 0
 }
 
-func (r *Registers) SetTF() {
+func (r *X64registers) SetTF() {
 	r.RFLAGS = r.RFLAGS | 256
 }
 
-func (r *Registers) RemoveTF() {
+func (r *X64registers) RemoveTF() {
 	r.RFLAGS = r.RFLAGS ^ 256
 }
 
 // Interrupt Enable Flag (9bit)
-func (r *Registers) IsEF() bool {
+func (r *X64registers) IsEF() bool {
 	return (r.RFLAGS & 512) != 0
 }
 
-func (r *Registers) SetIF() {
+func (r *X64registers) SetIF() {
 	r.RFLAGS = r.RFLAGS | 512
 }
 
-func (r *Registers) RemoveIF() {
+func (r *X64registers) RemoveIF() {
 	r.RFLAGS = r.RFLAGS ^ 512
 }
 
 // Direction Flag (10bit)
-func (r *Registers) IsDF() bool {
+func (r *X64registers) IsDF() bool {
 	return (r.RFLAGS & 1024) != 0
 }
 
-func (r *Registers) SetDF() {
+func (r *X64registers) SetDF() {
 	r.RFLAGS = r.RFLAGS | 1024
 }
 
-func (r *Registers) RemoveDF() {
+func (r *X64registers) RemoveDF() {
 	r.RFLAGS = r.RFLAGS ^ 1024
 }
 
 // Overflow Flag (11bit)
-func (r *Registers) IsOF() bool {
+func (r *X64registers) IsOF() bool {
 	return (r.RFLAGS & 2048) != 0
 }
 
-func (r *Registers) SetOF() {
+func (r *X64registers) SetOF() {
 	r.RFLAGS = r.RFLAGS | 2048
 }
 
-func (r *Registers) RemoveOF() {
+func (r *X64registers) RemoveOF() {
 	r.RFLAGS = r.RFLAGS ^ 2048
 }
 
 // I/O Privilege Level Field (12-13bit)
-func (r *Registers) IsIOPL() bool {
+func (r *X64registers) IsIOPL() bool {
 	return (r.RFLAGS & 4096) != 0
 }
 
-func (r *Registers) SetIOPL() {
+func (r *X64registers) SetIOPL() {
 	r.RFLAGS = r.RFLAGS | 4096 // TODO: fix later
 }
 
-func (r *Registers) RemoveIOPL() {
+func (r *X64registers) RemoveIOPL() {
 	r.RFLAGS = r.RFLAGS ^ 4096 // TODO: fix later
 }
 
 // Nested Task Flag (14bit)
-func (r *Registers) IsNT() bool {
+func (r *X64registers) IsNT() bool {
 	return (r.RFLAGS & 16384) != 0
 }
 
-func (r *Registers) SetNT() {
+func (r *X64registers) SetNT() {
 	r.RFLAGS = r.RFLAGS | 16384
 }
 
-func (r *Registers) RemoveNT() {
+func (r *X64registers) RemoveNT() {
 	r.RFLAGS = r.RFLAGS ^ 16384
 }
 
 // Resume Flag (16bit)
-func (r *Registers) IsRF() bool {
+func (r *X64registers) IsRF() bool {
 	return (r.RFLAGS & 65536) != 0
 }
 
-func (r *Registers) SetRF() {
+func (r *X64registers) SetRF() {
 	r.RFLAGS = r.RFLAGS | 65536
 }
 
-func (r *Registers) RemoveRF() {
+func (r *X64registers) RemoveRF() {
 	r.RFLAGS = r.RFLAGS ^ 65536
 }
 
 // Virtual x86 Mode Flag (17bit)
-func (r *Registers) IsVM() bool {
+func (r *X64registers) IsVM() bool {
 	return (r.RFLAGS & 131072) != 0
 }
 
-func (r *Registers) SetVM() {
+func (r *X64registers) SetVM() {
 	r.RFLAGS = r.RFLAGS | 131072
 }
 
-func (r *Registers) RemoveVM() {
+func (r *X64registers) RemoveVM() {
 	r.RFLAGS = r.RFLAGS ^ 131072
 }
 
 // Alignment Check Flag (18bit)
-func (r *Registers) IsAC() bool {
+func (r *X64registers) IsAC() bool {
 	return (r.RFLAGS & 262144) != 0
 }
 
-func (r *Registers) SetAC() {
+func (r *X64registers) SetAC() {
 	r.RFLAGS = r.RFLAGS | 262144
 }
 
-func (r *Registers) RemoveAC() {
+func (r *X64registers) RemoveAC() {
 	r.RFLAGS = r.RFLAGS ^ 262144
 }
 
 // Virtual Interrupt Flag (19bit)
-func (r *Registers) IsVIF() bool {
+func (r *X64registers) IsVIF() bool {
 	return (r.RFLAGS & 524288) != 0
 }
 
-func (r *Registers) SetVIF() {
+func (r *X64registers) SetVIF() {
 	r.RFLAGS = r.RFLAGS | 524288
 }
 
-func (r *Registers) RemoveVIF() {
+func (r *X64registers) RemoveVIF() {
 	r.RFLAGS = r.RFLAGS ^ 524288
 }
 
 // Virtual Interrupt Pending Flag (20bit)
-func (r *Registers) IsVIP() bool {
+func (r *X64registers) IsVIP() bool {
 	return (r.RFLAGS & 1048576) != 0
 }
 
-func (r *Registers) SetVIP() {
+func (r *X64registers) SetVIP() {
 	r.RFLAGS = r.RFLAGS | 1048576
 }
 
-func (r *Registers) RemoveVIP() {
+func (r *X64registers) RemoveVIP() {
 	r.RFLAGS = r.RFLAGS ^ 1048576
 }
 
 // Identification Flag (21bit)
-func (r *Registers) IsID() bool {
+func (r *X64registers) IsID() bool {
 	return (r.RFLAGS & 2097152) != 0
 }
 
-func (r *Registers) SetID() {
+func (r *X64registers) SetID() {
 	r.RFLAGS = r.RFLAGS | 2097152
 }
 
-func (r *Registers) RemoveID() {
+func (r *X64registers) RemoveID() {
 	r.RFLAGS = r.RFLAGS ^ 2097152
 }

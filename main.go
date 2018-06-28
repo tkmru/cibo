@@ -8,7 +8,8 @@ import (
 func main() {
 	console, _ := cibo.NewConsole()
 	cpu := console.CPU
-	r := cpu.Registers
+	// r := cpu.X64registers
+	r := cpu.X86registers
 	r.Init()
 	r.SetCF()
 	if r.IsCF() {

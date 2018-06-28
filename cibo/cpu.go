@@ -4,7 +4,8 @@ import "fmt"
 
 type CPU struct {
   Memory
-  Registers
+  X86registers
+  X64registers
 }
 
 func NewCPU(console *Console) *CPU {
