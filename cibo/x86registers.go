@@ -5,6 +5,8 @@ import (
 	"reflect"
 )
 
+var registerIndex = [8]string{"EAX", "ECX", "EDX", "EBX", "ESP", "EBP", "ESI", "EDI"}
+
 type X86registers struct {
 	// GPR
 	EAX uint32

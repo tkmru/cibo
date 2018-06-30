@@ -6,17 +6,17 @@ type Memory interface {
 }
 
 type cpuMemory struct {
-	console *Console
+	emulator *Emulator
 }
 
 func (mem *cpuMemory) Read(address uint64, index uint64) []byte {
-	return mem.console.RAM[address:index]
+	return mem.emulator.RAM[address:index]
 }
 
 func (mem *cpuMemory) Write(address uint64, value byte) {
-	mem.console.RAM[address] = value
+	mem.emulator.RAM[address] = value
 }
 
-func NewCPUMemory(console *Console) Memory {
-	return &cpuMemory{console}
+func NewCPUMemory(emulator *Emulator) Memory {
+	return &cpuMemory{emulator}
 }
