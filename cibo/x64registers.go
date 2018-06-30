@@ -43,8 +43,8 @@ type X64registers struct {
 	MM5 uint64
 	MM6 uint64
 	MM7 uint64
-  // TODO: XMM registers (XMM0 through XMM15) and the MXCSR register
-  // uint128 doesn't existed
+	// TODO: XMM registers (XMM0 through XMM15) and the MXCSR register
+	// uint128 doesn't existed
 
 	// Control Registers
 	CR0  uint64
@@ -64,7 +64,7 @@ type X64registers struct {
 	CR14 uint64
 	CR15 uint64
 	// Extended Feature Enable Register
-  IA32_EFER uint64
+	IA32_EFER uint64
 }
 
 func (r *X64registers) Init() {
@@ -137,7 +137,6 @@ func (r *X64registers) RemovePF() {
 	r.RFLAGS = r.RFLAGS ^ 4
 }
 
-
 // Adjust Flag (4bit)
 func (r *X64registers) IsAF() bool {
 	return (r.RFLAGS & 16) != 0
@@ -150,7 +149,6 @@ func (r *X64registers) SetAF() {
 func (r *X64registers) RemoveAF() {
 	r.RFLAGS = r.RFLAGS ^ 16
 }
-
 
 // Zero Flag (6bit)
 func (r *X64registers) IsZF() bool {

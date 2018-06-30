@@ -25,7 +25,7 @@ type X86registers struct {
 	FS uint16
 	GS uint16
 	// FLAGS Register
-  EFLAGS uint32
+	EFLAGS uint32
 	// MMX registers (MM0 through MM7)
 	MM0 uint64
 	MM1 uint64
@@ -35,18 +35,18 @@ type X86registers struct {
 	MM5 uint64
 	MM6 uint64
 	MM7 uint64
-  // TODO: XMM registers (XMM0 through XMM15) and the MXCSR register
-  // uint128 doesn't existed
+	// TODO: XMM registers (XMM0 through XMM15) and the MXCSR register
+	// uint128 doesn't existed
 
 	// Control Registers
-	CR0  uint64
-	CR1  uint64
-	CR2  uint64
-	CR3  uint64
-	CR4  uint64
-	CR5  uint64
-	CR6  uint64
-	CR7  uint64
+	CR0 uint64
+	CR1 uint64
+	CR2 uint64
+	CR3 uint64
+	CR4 uint64
+	CR5 uint64
+	CR6 uint64
+	CR7 uint64
 }
 
 func (r *X86registers) Init() {
@@ -116,7 +116,6 @@ func (r *X86registers) RemovePF() {
 	r.EFLAGS = r.EFLAGS ^ 4
 }
 
-
 // Adjust Flag (4bit)
 func (r *X86registers) IsAF() bool {
 	return (r.EFLAGS & 16) != 0
@@ -129,7 +128,6 @@ func (r *X86registers) SetAF() {
 func (r *X86registers) RemoveAF() {
 	r.EFLAGS = r.EFLAGS ^ 16
 }
-
 
 // Zero Flag (6bit)
 func (r *X86registers) IsZF() bool {
