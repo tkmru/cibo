@@ -6,9 +6,9 @@ type Emulator struct {
 	// TODO: add device
 }
 
-func NewEmulator() (*Emulator, error) {
+func NewEmulator() *Emulator {
 	ram := make([]byte, 2048)
 	emu := Emulator{nil, ram}
 	emu.CPU = NewCPU(&emu)
-	return &emu, nil
+	return &emu
 }

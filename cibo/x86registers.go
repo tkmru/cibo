@@ -91,6 +91,20 @@ func (r X86registers) Dump() {
 	}
 }
 
+func (r *X86registers) GetRegister32(index uint8) uint32 {
+	regName := registerIndex[index]
+	regValue := reflect.ValueOf(r)
+	regValueByName := reflect.Indirect(regValue).FieldByName(regName)
+	return uint32(regValueByName.Int())
+}
+
+func (r *X86registers) SetRegister32(index uint8, value uint32) {
+	regName := registerIndex[index]
+	regValue := reflect.ValueOf(r)
+	regValueByName := reflect.Indirect(regValue).FieldByName(regName)
+	regValueByName.Set(reflect.ValueOf(&value))
+}
+
 // FLAGS Register
 // Carry Flag (0 bit)
 func (r *X86registers) IsCF() bool {

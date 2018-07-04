@@ -17,7 +17,7 @@ func main() {
 		log.Fatalln("no binary file specified or found")
 	}
 
-	emu, _ := cibo.NewEmulator()
+	emu := cibo.NewEmulator()
 	cpu := emu.CPU
 	// r := cpu.X64registers
 	r := cpu.X86registers
