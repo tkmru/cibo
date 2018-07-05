@@ -2,7 +2,7 @@ package main
 
 import (
 	"./cibo"
-	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -12,29 +12,30 @@ import (
 func main() {
 	log.SetFlags(0)
 
-	binPath := getPaths()
-	if len(binPath) == 0 {
+	filePath := getPath()
+	if len(filePath) == 0 {
 		log.Fatalln("no binary file specified or found")
 	}
+	fileinfo, staterr := os.Stat(filePath)
+	if staterr != nil {
+		log.Fatalln(staterr)
+  }
+	emu := cibo.NewEmulator(0x7c00, fileinfo.Size())
+	RAM := emu.RAM
+	f, _ := os.Open(filePath)
+	copySize, _ := io.ReadFull(f, RAM)
+	if int64(copySize) != fileinfo.Size() {
+		log.Fatalln("size not matched")
+	}
 
-	emu := cibo.NewEmulator()
 	cpu := emu.CPU
-	// r := cpu.X64registers
-	r := cpu.X86registers
-	r.Init()
-	r.SetCF()
-	if r.IsCF() {
-		fmt.Printf("set\n")
-	}
-	r.RemoveCF()
-	if !r.IsCF() {
-		fmt.Printf("no set\n")
-	}
-	r.Dump()
+	reg := cpu.X86registers
+	reg.Init()
+	reg.Dump()
 }
 
 
-func getPaths() string {
+func getPath() string {
 	var arg string
 	args := os.Args[1:]
 	if len(args) == 1 {
