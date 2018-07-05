@@ -1,11 +1,10 @@
 package cibo
 
-//import "fmt"
-
 type CPU struct {
 	Memory
 	X86registers
 	X64registers
+	table [256]func()
 }
 
 func NewCPU(emulator *Emulator) *CPU {
