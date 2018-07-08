@@ -17,7 +17,7 @@ type ModRM struct {
 
 func (modrm *ModRM) parse(cpu *CPU) {
   mem := cpu.Memory
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
   code := uint8(mem.GetCode8(0))
 
   modrm.Mod = ((code & 0xc0) >> 6)
@@ -44,7 +44,7 @@ func (modrm *ModRM) parse(cpu *CPU) {
 }
 
 func (modrm *ModRM) calcAddress(cpu *CPU) (result uint32) {
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
 
   if modrm.Mod == 0 {
     if modrm.Rm == 4 {
@@ -71,7 +71,7 @@ func (modrm *ModRM) calcAddress(cpu *CPU) (result uint32) {
 
 func (modrm *ModRM) setRM32(cpu *CPU, value uint32) {
   mem := cpu.Memory
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
 
   if modrm.Mod == 3 {
     reg.SetRegister32(modrm.Rm, value)
@@ -83,7 +83,7 @@ func (modrm *ModRM) setRM32(cpu *CPU, value uint32) {
 
 func (modrm *ModRM) getRM32(cpu *CPU) (result uint32) {
   mem := cpu.Memory
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
 
   if modrm.Mod == 3 {
     result = reg.GetRegister32(modrm.Rm)
@@ -95,11 +95,11 @@ func (modrm *ModRM) getRM32(cpu *CPU) (result uint32) {
 }
 
 func (modrm *ModRM) setR32(cpu *CPU, value uint32) {
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
   reg.SetRegister32(modrm.RegIndex, value)
 }
 
 func (modrm *ModRM) getR32(cpu *CPU) uint32 {
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
   return reg.GetRegister32(modrm.RegIndex)
 }

@@ -26,15 +26,19 @@ func (mem *cpuMemory) Write(address uint64, value byte) {
 }
 
 func (mem *cpuMemory) GetCode8(index int) uint8 {
-	cpu := mem.emulator.CPU
-	reg := cpu.X86registers
-	return uint8(mem.emulator.RAM[reg.EIP+uint32(index)])
+	emu := mem.emulator
+	cpu := emu.CPU
+	reg := &cpu.X86registers
+	address := reg.EIP - uint32(emu.baseAddress)
+	return uint8(mem.emulator.RAM[address+uint32(index)])
 }
 
 func (mem *cpuMemory) GetSignCode8(index int) int8 {
-	cpu := mem.emulator.CPU
-	reg := cpu.X86registers
-	return int8(mem.emulator.RAM[reg.EIP+uint32(index)])
+	emu := mem.emulator
+	cpu := emu.CPU
+	reg := &cpu.X86registers
+	address := reg.EIP - uint32(emu.baseAddress)
+	return int8(mem.emulator.RAM[address+uint32(index)])
 }
 
 func (mem *cpuMemory) GetCode32(index int) uint32 {

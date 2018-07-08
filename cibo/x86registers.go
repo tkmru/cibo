@@ -65,6 +65,8 @@ func (r *X86registers) Init() {
 			if t.Field(i).Name == "EFLAGS" {
 				// Reserved 1st bit, it's always 1 in EFLAGS.
 				f.Set(reflect.ValueOf(uint32(2))) // 0b10
+			} else if t.Field(i).Name == "EIP" {
+				continue
 			} else {
 				f.Set(reflect.ValueOf(uint32(0)))
 			}
@@ -93,14 +95,14 @@ func (r X86registers) Dump() {
 
 func (r *X86registers) GetRegister32(index uint8) uint32 {
 	regName := registerIndex[index]
-	regValue := reflect.ValueOf(r)
+	regValue := reflect.ValueOf(*r)
 	regValueByName := reflect.Indirect(regValue).FieldByName(regName)
 	return uint32(regValueByName.Int())
 }
 
 func (r *X86registers) SetRegister32(index uint8, value uint32) {
 	regName := registerIndex[index]
-	regValue := reflect.ValueOf(r)
+	regValue := reflect.ValueOf(*r)
 	regValueByName := reflect.Indirect(regValue).FieldByName(regName)
 	regValueByName.Set(reflect.ValueOf(&value))
 }

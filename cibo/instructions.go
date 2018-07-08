@@ -6,23 +6,23 @@ import (
 )
 
 func (cpu *CPU) createTable() {
-	cpu.table[0x01] = cpu.addRM32R32
-	cpu.table[0x83] = cpu.code83
-	cpu.table[0x89] = cpu.movRM32R32
-	cpu.table[0x8b] = cpu.movR32RM32
+	cpu.InstTable[0x01] = cpu.addRM32R32
+	cpu.InstTable[0x83] = cpu.code83
+	cpu.InstTable[0x89] = cpu.movRM32R32
+	cpu.InstTable[0x8b] = cpu.movR32RM32
 
 	for i := 0; i < 8; i++ {
-		cpu.table[0xb8+i] = cpu.movR32Imm32
+		cpu.InstTable[0xb8+i] = cpu.movR32Imm32
 	}
 
-	cpu.table[0xc7] = cpu.movRM32Imm32
-	cpu.table[0xe9] = cpu.nearJump
-	cpu.table[0xeb] = cpu.shortJump
-	cpu.table[0xff] = cpu.codeFF
+	cpu.InstTable[0xc7] = cpu.movRM32Imm32
+	cpu.InstTable[0xe9] = cpu.nearJump
+	cpu.InstTable[0xeb] = cpu.shortJump
+	cpu.InstTable[0xff] = cpu.codeFF
 }
 
 func (cpu *CPU) addRM32R32() {
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
 	reg.EIP += 1
 	var modrm ModRM
 	modrm.parse(cpu)
@@ -32,7 +32,7 @@ func (cpu *CPU) addRM32R32() {
 }
 
 func (cpu *CPU) code83() {
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
 	reg.EIP += 1
 	var modrm ModRM
 	modrm.parse(cpu)
@@ -47,7 +47,7 @@ func (cpu *CPU) code83() {
 }
 
 func (cpu *CPU) subRM32Imm8(modrm *ModRM) {
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
   mem := cpu.Memory
   rm32 := int32(modrm.getRM32(cpu))
   imm8 := int32(mem.GetSignCode8(0))
@@ -57,7 +57,7 @@ func (cpu *CPU) subRM32Imm8(modrm *ModRM) {
 
 func (cpu *CPU) movRM32R32() {
   var modrm ModRM
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
 	reg.EIP += 1
 	modrm.parse(cpu)
 	r32 := modrm.getR32(cpu)
@@ -66,7 +66,7 @@ func (cpu *CPU) movRM32R32() {
 
 func (cpu *CPU) movR32RM32() {
   var modrm ModRM
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
 	reg.EIP += 1
 	modrm.parse(cpu)
 	rm32 := modrm.getRM32(cpu)
@@ -77,14 +77,14 @@ func (cpu *CPU) movR32Imm32() {
   mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0xb8
 	value := mem.GetCode32(1)
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
   reg.SetRegister32(regIndex, value)
 	reg.EIP += 5
 }
 
 func (cpu *CPU) movRM32Imm32() {
   var modrm ModRM
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
   mem := cpu.Memory
 	reg.EIP += 5
 	modrm.parse(cpu)
@@ -93,14 +93,14 @@ func (cpu *CPU) movRM32Imm32() {
 }
 
 func (cpu *CPU) nearJump() {
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
   mem := cpu.Memory
 	diff := mem.GetSignCode32(1)
 	reg.EIP += uint32(diff + 5)
 }
 
 func (cpu *CPU) shortJump() {
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
   mem := cpu.Memory
 	diff := mem.GetCode8(1)
 	reg.EIP += uint32(diff + 2)
@@ -113,7 +113,7 @@ func (cpu *CPU) incRM32(modrm *ModRM) {
 
 func (cpu *CPU) codeFF() {
   var modrm ModRM
-  reg := cpu.X86registers
+  reg := &cpu.X86registers
 	reg.EIP += 1
 	modrm.parse(cpu)
 	switch modrm.Opcode {

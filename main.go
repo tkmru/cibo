@@ -20,17 +20,38 @@ func main() {
 	if staterr != nil {
 		log.Fatalln(staterr)
   }
-	emu := cibo.NewEmulator(0x7c00, fileinfo.Size())
+	memSize := fileinfo.Size()
+	beginAddress := 0x7c00
+	emu := cibo.NewEmulator(beginAddress, memSize)
 	RAM := emu.RAM
+	cpu := emu.CPU
+	mem := cpu.Memory
+	reg := cpu.X86registers
 	f, _ := os.Open(filePath)
 	copySize, _ := io.ReadFull(f, RAM)
 	if int64(copySize) != fileinfo.Size() {
 		log.Fatalln("size not matched")
 	}
 
-	cpu := emu.CPU
-	reg := cpu.X86registers
 	reg.Init()
+	log.Printf("EIP = %X\n", reg.EIP)
+
+	for i := beginAddress; i < (beginAddress + int(memSize)); i++ {
+		code := uint8(mem.GetCode8(0))
+  	log.Printf("EIP = %X, Opcode = %02X\n", reg.EIP, code)
+
+    if cpu.InstTable[code] == nil {
+      log.Fatalf("Not Implemented: %x\n", code)
+      break
+    }
+
+		if reg.EIP == 0 {
+			log.Fatalln("EIP: 0")
+      break
+		}
+
+    cpu.InstTable[code]()
+	}
 	reg.Dump()
 }
 
@@ -40,8 +61,6 @@ func getPath() string {
 	args := os.Args[1:]
 	if len(args) == 1 {
 		arg = args[0]
-	} else {
-		arg, _ = os.Getwd()
 	}
 	info, err := os.Stat(arg)
 	if err != nil {
