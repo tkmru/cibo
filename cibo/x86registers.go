@@ -94,17 +94,19 @@ func (r X86registers) Dump() {
 }
 
 func (r *X86registers) GetRegister32(index uint8) uint32 {
-	regName := registerIndex[index]
-	regValue := reflect.ValueOf(*r)
-	regValueByName := reflect.Indirect(regValue).FieldByName(regName)
-	return uint32(regValueByName.Int())
+	registerName := registerIndex[index]
+	registersPointer := reflect.ValueOf(r) // pointer to struct - addressable
+	registers := registersPointer.Elem()   // struct
+	targetRegister := registers.FieldByName(registerName)
+	return targetRegister.Interface().(uint32)
 }
 
 func (r *X86registers) SetRegister32(index uint8, value uint32) {
-	regName := registerIndex[index]
-	regValue := reflect.ValueOf(*r)
-	regValueByName := reflect.Indirect(regValue).FieldByName(regName)
-	regValueByName.Set(reflect.ValueOf(&value))
+	registerName := registerIndex[index]
+	registersPointer := reflect.ValueOf(r) // pointer to struct - addressable
+	registers := registersPointer.Elem()   // struct
+	targetRegister := registers.FieldByName(registerName)
+	targetRegister.Set(reflect.ValueOf(value))
 }
 
 // FLAGS Register
