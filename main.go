@@ -26,7 +26,7 @@ func main() {
 	RAM := emu.RAM
 	cpu := emu.CPU
 	mem := cpu.Memory
-	reg := cpu.X86registers
+	reg := &cpu.X86registers
 	f, _ := os.Open(filePath)
 	copySize, _ := io.ReadFull(f, RAM)
 	if int64(copySize) != fileinfo.Size() {
@@ -36,7 +36,12 @@ func main() {
 	reg.Init()
 	log.Printf("EIP = %X\n", reg.EIP)
 
-	for i := beginAddress; i < (beginAddress + int(memSize)); i++ {
+	for i := 0; i < int(memSize); i++ {
+		if reg.EIP == 0 {
+			log.Println("EIP = 0")
+			break
+		}
+
 		code := uint8(mem.GetCode8(0))
   	log.Printf("EIP = %X, Opcode = %02X\n", reg.EIP, code)
 
@@ -45,13 +50,9 @@ func main() {
       break
     }
 
-		if reg.EIP == 0 {
-			log.Fatalln("EIP: 0")
-      break
-		}
-
     cpu.InstTable[code]()
 	}
+	log.Println("==================== registers ====================")
 	reg.Dump()
 }
 
