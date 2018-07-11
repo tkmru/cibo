@@ -25,7 +25,6 @@ func main() {
 	emu := cibo.NewEmulator(beginAddress, memSize)
 	RAM := emu.RAM
 	cpu := emu.CPU
-	mem := cpu.Memory
 	reg := &cpu.X86registers
 	f, _ := os.Open(filePath)
 	copySize, _ := io.ReadFull(f, RAM)
@@ -34,24 +33,7 @@ func main() {
 	}
 
 	reg.Init()
-	log.Printf("EIP = %X\n", reg.EIP)
-
-	for i := 0; i < int(memSize); i++ {
-		if reg.EIP == 0 {
-			log.Println("EIP = 0")
-			break
-		}
-
-		code := uint8(mem.GetCode8(0))
-  	log.Printf("EIP = %X, Opcode = %02X\n", reg.EIP, code)
-
-    if cpu.InstTable[code] == nil {
-      log.Fatalf("Not Implemented: %x\n", code)
-      break
-    }
-
-    cpu.InstTable[code]()
-	}
+	emu.Run()
 	log.Println("==================== registers ====================")
 	reg.Dump()
 }

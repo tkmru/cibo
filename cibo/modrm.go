@@ -53,14 +53,14 @@ func (modrm *ModRM) calcAddress(cpu *CPU) (result uint32) {
     } else if modrm.Rm == 5 {
       result = modrm.Disp32
     } else {
-      result = uint32(reg.GetRegister32(modrm.Rm))
+      result = uint32(reg.GetByIndex(modrm.Rm))
     }
   } else if modrm.Mod == 1 {
     if modrm.Rm == 4 {
       fmt.Println("not implemented ModRM mod = 2, rm = 4")
       os.Exit(0)
     } else {
-      result = uint32(reg.GetRegister32(modrm.Rm)) + modrm.Disp32
+      result = uint32(reg.GetByIndex(modrm.Rm)) + modrm.Disp32
     }
   } else {
     fmt.Println("not implemented ModRM mod = 3")
@@ -74,10 +74,10 @@ func (modrm *ModRM) setRM32(cpu *CPU, value uint32) {
   reg := &cpu.X86registers
 
   if modrm.Mod == 3 {
-    reg.SetRegister32(modrm.Rm, value)
+    reg.SetByIndex(modrm.Rm, value)
   } else {
     address := modrm.calcAddress(cpu)
-    mem.WriteMemory32(address, value)
+    mem.Write32(address, value)
   }
 }
 
@@ -86,20 +86,20 @@ func (modrm *ModRM) getRM32(cpu *CPU) (result uint32) {
   reg := &cpu.X86registers
 
   if modrm.Mod == 3 {
-    result = reg.GetRegister32(modrm.Rm)
+    result = reg.GetByIndex(modrm.Rm)
   } else {
     address := modrm.calcAddress(cpu)
-    result = mem.ReadMemory32(address)
+    result = mem.Read32(address)
   }
   return result
 }
 
 func (modrm *ModRM) setR32(cpu *CPU, value uint32) {
   reg := &cpu.X86registers
-  reg.SetRegister32(modrm.RegIndex, value)
+  reg.SetByIndex(modrm.RegIndex, value)
 }
 
 func (modrm *ModRM) getR32(cpu *CPU) uint32 {
   reg := &cpu.X86registers
-  return reg.GetRegister32(modrm.RegIndex)
+  return reg.GetByIndex(modrm.RegIndex)
 }

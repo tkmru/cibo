@@ -84,16 +84,16 @@ func (r X86registers) Dump() {
 
 		switch registerName {
 		case "EFLAGS":
-			fmt.Printf("%02d: %s = %d (%032b)\n",
+			fmt.Printf("%02d: %s = 0x%X (%032b)\n",
 				i+1, registerName, registerValue, registerValue)
 		default:
-			fmt.Printf("%02d: %s = %d\n",
+			fmt.Printf("%02d: %s = 0x%X\n",
 				i+1, registerName, registerValue)
 		}
 	}
 }
 
-func (r *X86registers) GetRegister32(index uint8) uint32 {
+func (r *X86registers) GetByIndex(index uint8) uint32 {
 	registerName := registerIndex[index]
 	registersPointer := reflect.ValueOf(r) // pointer to struct - addressable
 	registers := registersPointer.Elem()   // struct
@@ -101,7 +101,7 @@ func (r *X86registers) GetRegister32(index uint8) uint32 {
 	return targetRegister.Interface().(uint32)
 }
 
-func (r *X86registers) SetRegister32(index uint8, value uint32) {
+func (r *X86registers) SetByIndex(index uint8, value uint32) {
 	registerName := registerIndex[index]
 	registersPointer := reflect.ValueOf(r) // pointer to struct - addressable
 	registers := registersPointer.Elem()   // struct

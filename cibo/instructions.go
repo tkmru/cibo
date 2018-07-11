@@ -78,7 +78,7 @@ func (cpu *CPU) movR32Imm32() {
 	regIndex := mem.GetCode8(0) - 0xb8
 	value := mem.GetCode32(1)
   reg := &cpu.X86registers
-  reg.SetRegister32(regIndex, value)
+  reg.SetByIndex(regIndex, value)
 	reg.EIP += 5
 }
 
