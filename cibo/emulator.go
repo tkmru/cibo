@@ -26,18 +26,17 @@ func (emu *Emulator) Run() {
 	reg := &cpu.X86registers
 	for i := 0; i < int(ramSize); i++ {
 		code := uint8(mem.GetCode8(0))
-  	log.Printf("EIP = %X, Opcode = %02X\n", reg.EIP, code)
+  	log.Printf("EIP = 0x%X, Opcode = 0x%02X\n", reg.EIP, code)
 
     if cpu.InstTable[code] == nil {
-      log.Fatalf("Not Implemented: %x\n", code)
+      log.Fatalf("Not Implemented: 0x%x\n", code)
       break
     }
 
     cpu.InstTable[code]()
 
 		if (reg.EIP <= uint32(emu.BaseAddress)) || (uint32(mappingEnd) <= reg.EIP) {
-			log.Printf("EIP = %X\n", reg.EIP)
-			log.Println("No mapping area")
+			log.Printf("No mapping area: 0x%X\n", reg.EIP)
 			break
 		}
 	}

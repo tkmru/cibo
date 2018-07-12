@@ -7,6 +7,7 @@ import (
 
 func (cpu *CPU) createTable() {
 	cpu.InstTable[0x01] = cpu.addRM32R32
+  cpu.InstTable[0x05] = cpu.addEAXImm32
 	cpu.InstTable[0x83] = cpu.code83
 	cpu.InstTable[0x89] = cpu.movRM32R32
 	cpu.InstTable[0x8b] = cpu.movR32RM32
@@ -29,6 +30,14 @@ func (cpu *CPU) addRM32R32() {
 	r32 := modrm.getR32(cpu)
 	rm32 := modrm.getRM32(cpu)
 	modrm.setRM32(cpu, rm32+r32)
+}
+
+func (cpu *CPU) addEAXImm32() {
+  reg := &cpu.X86registers
+  mem := cpu.Memory
+  value := mem.GetCode32(1)
+  reg.EAX += uint32(value)
+  reg.EIP += 5
 }
 
 func (cpu *CPU) code83() {
@@ -58,19 +67,19 @@ func (cpu *CPU) subRM32Imm8(modrm *ModRM) {
 func (cpu *CPU) movRM32R32() {
   var modrm ModRM
   reg := &cpu.X86registers
-	reg.EIP += 1
 	modrm.parse(cpu)
 	r32 := modrm.getR32(cpu)
 	modrm.setRM32(cpu, r32)
+  reg.EIP += 1
 }
 
 func (cpu *CPU) movR32RM32() {
   var modrm ModRM
   reg := &cpu.X86registers
-	reg.EIP += 1
 	modrm.parse(cpu)
 	rm32 := modrm.getRM32(cpu)
 	modrm.setR32(cpu, rm32)
+  reg.EIP += 5
 }
 
 func (cpu *CPU) movR32Imm32() {
@@ -86,10 +95,10 @@ func (cpu *CPU) movRM32Imm32() {
   var modrm ModRM
   reg := &cpu.X86registers
   mem := cpu.Memory
-	reg.EIP += 5
 	modrm.parse(cpu)
 	value := mem.GetCode32(0)
 	modrm.setRM32(cpu, value)
+  reg.EIP += 5
 }
 
 func (cpu *CPU) nearJump() {

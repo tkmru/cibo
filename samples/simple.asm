@@ -1,4 +1,6 @@
 BITS 32
   org 0x7c00
   mov eax, 0x41
+  mov ebx, 0x42
+  add eax, 0x1000
   jmp 0
