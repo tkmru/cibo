@@ -38,7 +38,7 @@ func (mem *cpuMemory) Write(address uint32, value byte) {
 func (mem *cpuMemory) Write32(address uint32, value uint32) {
 	for i := 0; i < 4; i++ {
 		mem.Write(address+uint32(i), byte(value>>(uint(i)*8)))
-  }
+	}
 }
 
 func (mem *cpuMemory) GetCode8(index int) uint8 {
@@ -46,7 +46,7 @@ func (mem *cpuMemory) GetCode8(index int) uint8 {
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 	address := reg.EIP - uint32(emu.BaseAddress)
-	return uint8(mem.Read(address+uint32(index)))
+	return uint8(mem.Read(address + uint32(index)))
 }
 
 func (mem *cpuMemory) GetSignCode8(index int) int8 {
@@ -54,7 +54,7 @@ func (mem *cpuMemory) GetSignCode8(index int) int8 {
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 	address := reg.EIP - uint32(emu.BaseAddress)
-	return int8(mem.Read(address+uint32(index)))
+	return int8(mem.Read(address + uint32(index)))
 }
 
 func (mem *cpuMemory) GetCode32(index int) uint32 {
