@@ -9,6 +9,8 @@ type Memory interface {
 	GetSignCode8(index int) int8
 	GetCode32(index int) uint32
 	GetSignCode32(index int) int32
+	Push(value uint32)
+	Pop() uint32
 }
 
 type cpuMemory struct {
@@ -68,4 +70,23 @@ func (mem *cpuMemory) GetCode32(index int) uint32 {
 
 func (mem *cpuMemory) GetSignCode32(index int) int32 {
 	return int32(mem.GetCode32(index))
+}
+
+func (mem *cpuMemory) Push(value uint32) {
+	emu := mem.emulator
+	cpu := emu.CPU
+	reg := &cpu.X86registers
+	address := reg.ESP - 4
+	reg.ESP = address
+	mem.Write32(address, value)
+}
+
+func (mem *cpuMemory) Pop() (ret uint32) {
+	emu := mem.emulator
+	cpu := emu.CPU
+	reg := &cpu.X86registers
+	address := reg.ESP
+	value := mem.Read32(address)
+	reg.ESP = address + 4
+	return value
 }

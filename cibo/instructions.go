@@ -8,6 +8,15 @@ import (
 func (cpu *CPU) createTable() {
 	cpu.InstTable[0x01] = cpu.addRM32R32
 	cpu.InstTable[0x05] = cpu.addEAXImm32
+	for i := 0; i < 8; i++ {
+		cpu.InstTable[0x50+i] = cpu.PushR32
+	}
+	for i := 0; i < 8; i++ {
+		cpu.InstTable[0x58+i] = cpu.PopR32
+	}
+
+	cpu.InstTable[0x68] = cpu.PushImm32
+	cpu.InstTable[0x6a] = cpu.PushImm8
 	cpu.InstTable[0x83] = cpu.code83
 	cpu.InstTable[0x89] = cpu.movRM32R32
 	cpu.InstTable[0x8b] = cpu.movR32RM32
@@ -132,4 +141,36 @@ func (cpu *CPU) codeFF() {
 		fmt.Printf("not implemented: FF /%d\n", modrm.Opcode)
 		os.Exit(1)
 	}
+}
+
+func (cpu *CPU) PushR32() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	regIndex := mem.GetCode8(0) - 0x50
+	mem.Push(reg.GetByIndex(regIndex))
+	reg.EIP += 1
+}
+
+func (cpu *CPU) PushImm32() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode32(1)
+	mem.Push(value)
+	reg.EIP += 5
+}
+
+func (cpu *CPU) PushImm8() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode8(1)
+	mem.Push(uint32(value))
+	reg.EIP += 2
+}
+
+func (cpu *CPU) PopR32() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	regIndex := mem.GetCode8(0) - 0x58
+	reg.SetByIndex(regIndex, mem.Pop())
+	reg.EIP += 1
 }
