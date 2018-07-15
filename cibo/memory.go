@@ -1,5 +1,7 @@
 package cibo
 
+//import "fmt"
+
 type Memory interface {
 	Read(address uint32) byte
 	Read32(address uint32) uint32
@@ -22,7 +24,9 @@ func NewCPUMemory(emulator *Emulator) Memory {
 }
 
 func (mem *cpuMemory) Read(address uint32) byte {
-	return mem.emulator.RAM[address]
+	emu := mem.emulator
+  index := address - uint32(emu.BaseAddress)
+	return mem.emulator.RAM[index]
 }
 
 func (mem *cpuMemory) Read32(address uint32) uint32 {
@@ -34,7 +38,9 @@ func (mem *cpuMemory) Read32(address uint32) uint32 {
 }
 
 func (mem *cpuMemory) Write(address uint32, value byte) {
-	mem.emulator.RAM[address] = value
+	emu := mem.emulator
+	index := address - uint32(emu.BaseAddress)
+	mem.emulator.RAM[index] = value
 }
 
 func (mem *cpuMemory) Write32(address uint32, value uint32) {
@@ -47,16 +53,14 @@ func (mem *cpuMemory) GetCode8(index int) uint8 {
 	emu := mem.emulator
 	cpu := emu.CPU
 	reg := &cpu.X86registers
-	address := reg.EIP - uint32(emu.BaseAddress)
-	return uint8(mem.Read(address + uint32(index)))
+	return uint8(mem.Read(reg.EIP + uint32(index)))
 }
 
 func (mem *cpuMemory) GetSignCode8(index int) int8 {
 	emu := mem.emulator
 	cpu := emu.CPU
 	reg := &cpu.X86registers
-	address := reg.EIP - uint32(emu.BaseAddress)
-	return int8(mem.Read(address + uint32(index)))
+	return int8(mem.Read(reg.EIP + uint32(index)))
 }
 
 func (mem *cpuMemory) GetCode32(index int) uint32 {
@@ -76,17 +80,17 @@ func (mem *cpuMemory) Push(value uint32) {
 	emu := mem.emulator
 	cpu := emu.CPU
 	reg := &cpu.X86registers
-	address := reg.ESP - 4
+  address := reg.ESP - 4
 	reg.ESP = address
-	mem.Write32(address, value)
+  mem.Write32(address, value)
 }
 
 func (mem *cpuMemory) Pop() (ret uint32) {
 	emu := mem.emulator
 	cpu := emu.CPU
 	reg := &cpu.X86registers
-	address := reg.ESP
-	value := mem.Read32(address)
+  address := reg.ESP
+  value := mem.Read32(address)
 	reg.ESP = address + 4
-	return value
+  return value
 }

@@ -67,6 +67,8 @@ func (r *X86registers) Init() {
 				f.Set(reflect.ValueOf(uint32(2))) // 0b10
 			} else if t.Field(i).Name == "EIP" {
 				continue
+			} else if t.Field(i).Name == "ESP" {
+				f.Set(reflect.ValueOf(uint32(0x7c04)))
 			} else {
 				f.Set(reflect.ValueOf(uint32(0)))
 			}

@@ -9,14 +9,14 @@ func (cpu *CPU) createTable() {
 	cpu.InstTable[0x01] = cpu.addRM32R32
 	cpu.InstTable[0x05] = cpu.addEAXImm32
 	for i := 0; i < 8; i++ {
-		cpu.InstTable[0x50+i] = cpu.PushR32
+		cpu.InstTable[0x50+i] = cpu.pushReg
 	}
 	for i := 0; i < 8; i++ {
-		cpu.InstTable[0x58+i] = cpu.PopR32
+		cpu.InstTable[0x58+i] = cpu.popReg
 	}
 
-	cpu.InstTable[0x68] = cpu.PushImm32
-	cpu.InstTable[0x6a] = cpu.PushImm8
+	cpu.InstTable[0x68] = cpu.pushImm32
+	cpu.InstTable[0x6a] = cpu.pushImm8
 	cpu.InstTable[0x83] = cpu.code83
 	cpu.InstTable[0x89] = cpu.movRM32R32
 	cpu.InstTable[0x8b] = cpu.movR32RM32
@@ -26,6 +26,7 @@ func (cpu *CPU) createTable() {
 	}
 
 	cpu.InstTable[0xc7] = cpu.movRM32Imm32
+	cpu.InstTable[0xe8] = cpu.callRelative
 	cpu.InstTable[0xe9] = cpu.nearJump
 	cpu.InstTable[0xeb] = cpu.shortJump
 	cpu.InstTable[0xff] = cpu.codeFF
@@ -143,7 +144,7 @@ func (cpu *CPU) codeFF() {
 	}
 }
 
-func (cpu *CPU) PushR32() {
+func (cpu *CPU) pushReg() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0x50
@@ -151,7 +152,7 @@ func (cpu *CPU) PushR32() {
 	reg.EIP += 1
 }
 
-func (cpu *CPU) PushImm32() {
+func (cpu *CPU) pushImm32() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	value := mem.GetCode32(1)
@@ -159,7 +160,7 @@ func (cpu *CPU) PushImm32() {
 	reg.EIP += 5
 }
 
-func (cpu *CPU) PushImm8() {
+func (cpu *CPU) pushImm8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	value := mem.GetCode8(1)
@@ -167,10 +168,18 @@ func (cpu *CPU) PushImm8() {
 	reg.EIP += 2
 }
 
-func (cpu *CPU) PopR32() {
+func (cpu *CPU) popReg() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0x58
 	reg.SetByIndex(regIndex, mem.Pop())
 	reg.EIP += 1
+}
+
+func (cpu *CPU) callRelative() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	diff := mem.GetSignCode32(1)
+	mem.Push(reg.EIP + 5)
+	reg.EIP += uint32(diff + 5)
 }
