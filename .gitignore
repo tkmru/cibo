@@ -6,6 +6,7 @@
 *.dylib
 main
 samples/simple
+samples/modrm_parse
 
 
 # Test binary, build with `go test -c`

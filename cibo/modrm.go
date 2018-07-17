@@ -72,7 +72,6 @@ func (modrm *ModRM) calcAddress(cpu *CPU) (result uint32) {
 func (modrm *ModRM) setRM32(cpu *CPU, value uint32) {
 	mem := cpu.Memory
 	reg := &cpu.X86registers
-
 	if modrm.Mod == 3 {
 		reg.SetByIndex(modrm.Rm, value)
 	} else {
