@@ -1,6 +1,6 @@
 package cibo
 
-//import "fmt"
+// import "fmt"
 
 type Memory interface {
 	Read(address uint32) byte
@@ -32,7 +32,7 @@ func (mem *cpuMemory) Read(address uint32) byte {
 func (mem *cpuMemory) Read32(address uint32) uint32 {
 	var ret uint32
 	for i := 0; i < 4; i++ {
-		ret |= uint32(mem.Read(address+uint32(i)) << (8 * uint32(i)))
+		ret |= uint32(mem.Read(address+uint32(i))) << (8 * uint32(i))
 	}
 	return ret
 }
