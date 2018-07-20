@@ -26,7 +26,9 @@ func (cpu *CPU) createTable() {
 		cpu.InstTable[0xb8+i] = cpu.movR32Imm32
 	}
 
+	cpu.InstTable[0xc3] = cpu.ret
 	cpu.InstTable[0xc7] = cpu.movRM32Imm32
+	cpu.InstTable[0xc9] = cpu.leave
 	cpu.InstTable[0xe8] = cpu.callRelative
 	cpu.InstTable[0xe9] = cpu.nearJump
 	cpu.InstTable[0xeb] = cpu.shortJump
@@ -58,10 +60,24 @@ func (cpu *CPU) code81() {
 	modrm.parse(cpu)
 
 	switch modrm.Opcode {
+	case 0:
+		//cpu.addRM32Imm32(&modrm)
+	case 1:
+		//cpu.orRM32Imm32(&modrm)
+	case 2:
+		//cpu.adcRM32Imm32(&modrm)
+	case 3:
+		//cpu.sbbRM32Imm32(&modrm)
+	case 4:
+		//cpu.andRM32Imm32(&modrm)
 	case 5:
 		cpu.subRM32Imm32(&modrm)
+	case 6:
+		//cpu.xorRM32Imm32(&modrm)
+	case 7:
+		//cpu.cmpRM32Imm32(&modrm)
 	default:
-		fmt.Printf("not implemented: 0x83 /%d\n", modrm.Opcode)
+		fmt.Printf("not implemented: 0x81 /%d\n", modrm.Opcode)
 		os.Exit(1)
 	}
 }
@@ -73,8 +89,22 @@ func (cpu *CPU) code83() {
 	modrm.parse(cpu)
 
 	switch modrm.Opcode {
+	case 0:
+		//cpu.addRM32Imm8(&modrm)
+	case 1:
+		//cpu.orRM32Imm8(&modrm)
+	case 2:
+		//cpu.adcRM32Imm8(&modrm)
+	case 3:
+		//cpu.sbbRM32Imm8(&modrm)
+	case 4:
+		//cpu.andRM32Imm8(&modrm)
 	case 5:
 		cpu.subRM32Imm8(&modrm)
+	case 6:
+		//cpu.xorRM32Imm8(&modrm)
+	case 7:
+		//cpu.cmpRM32Imm8(&modrm)
 	default:
 		fmt.Printf("not implemented: 0x83 /%d\n", modrm.Opcode)
 		os.Exit(1)
@@ -199,6 +229,21 @@ func (cpu *CPU) popReg() {
 	mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0x58
 	reg.SetByIndex(regIndex, mem.Pop())
+	reg.EIP += 1
+}
+
+func (cpu *CPU) ret() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	reg.EIP = mem.Pop()
+}
+
+func (cpu *CPU) leave() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	ebp := reg.EBP
+	reg.ESP = ebp
+	reg.EBP = mem.Pop()
 	reg.EIP += 1
 }
 

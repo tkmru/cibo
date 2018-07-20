@@ -5,7 +5,7 @@
 *.so
 *.dylib
 main
-samples/simple
+samples/simple_call
 samples/modrm_parse
 
 

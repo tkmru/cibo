@@ -8,3 +8,4 @@ start:
 add_routine:
     mov ebx, eax
     mov eax, 0x1011
+    ret
