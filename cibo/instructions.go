@@ -8,6 +8,7 @@ import (
 func (cpu *CPU) createTable() {
 	cpu.InstTable[0x01] = cpu.addRM32R32
 	cpu.InstTable[0x05] = cpu.addEAXImm32
+	cpu.InstTable[0x3B] = cpu.cmpR32RM32
 	for i := 0; i < 8; i++ {
 		cpu.InstTable[0x50+i] = cpu.pushReg
 	}
@@ -53,6 +54,26 @@ func (cpu *CPU) addEAXImm32() {
 	reg.EIP += 5
 }
 
+func (cpu *CPU) cmpR32RM32() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r32 := modrm.getR32(cpu)
+	rm32 := modrm.getRM32(cpu)
+	result := uint64(r32) - uint64(rm32)
+	reg.updateEFLAGS(r32, rm32, result)
+}
+
+func (cpu *CPU) subRM32Imm32(modrm *ModRM) {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	rm32 := int32(modrm.getRM32(cpu))
+	imm32 := int32(mem.GetSignCode32(0))
+	reg.EIP += 4
+	modrm.setRM32(cpu, uint32(rm32-imm32))
+}
+
 func (cpu *CPU) code81() {
 	reg := &cpu.X86registers
 	reg.EIP += 1
@@ -82,6 +103,27 @@ func (cpu *CPU) code81() {
 	}
 }
 
+func (cpu *CPU) subRM32Imm8(modrm *ModRM) {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	rm32 := modrm.getRM32(cpu)
+	imm8 := mem.GetSignCode8(0)
+	reg.EIP += 1
+	result := uint64(rm32) - uint64(imm8)
+	modrm.setRM32(cpu, uint32(result))
+	reg.updateEFLAGS(rm32, uint32(imm8), result)
+}
+
+func (cpu *CPU) cmpRM32Imm8(modrm *ModRM) {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	rm32 := modrm.getRM32(cpu)
+	imm8 := uint32(mem.GetSignCode8(0))
+	reg.EIP += 1
+	result := uint64(rm32) - uint64(imm8)
+	reg.updateEFLAGS(rm32, imm8, result)
+}
+
 func (cpu *CPU) code83() {
 	reg := &cpu.X86registers
 	reg.EIP += 1
@@ -104,29 +146,11 @@ func (cpu *CPU) code83() {
 	case 6:
 		//cpu.xorRM32Imm8(&modrm)
 	case 7:
-		//cpu.cmpRM32Imm8(&modrm)
+		cpu.cmpRM32Imm8(&modrm)
 	default:
 		fmt.Printf("not implemented: 0x83 /%d\n", modrm.Opcode)
 		os.Exit(1)
 	}
-}
-
-func (cpu *CPU) subRM32Imm8(modrm *ModRM) {
-	reg := &cpu.X86registers
-	mem := cpu.Memory
-	rm32 := int32(modrm.getRM32(cpu))
-	imm8 := int32(mem.GetSignCode8(0))
-	reg.EIP += 1
-	modrm.setRM32(cpu, uint32(rm32-imm8))
-}
-
-func (cpu *CPU) subRM32Imm32(modrm *ModRM) {
-	reg := &cpu.X86registers
-	mem := cpu.Memory
-	rm32 := int32(modrm.getRM32(cpu))
-	imm32 := int32(mem.GetSignCode32(0))
-	reg.EIP += 4
-	modrm.setRM32(cpu, uint32(rm32-imm32))
 }
 
 func (cpu *CPU) movRM32R32() {
