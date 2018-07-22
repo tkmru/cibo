@@ -8,16 +8,28 @@ import (
 func (cpu *CPU) createTable() {
 	cpu.InstTable[0x01] = cpu.addRM32R32
 	cpu.InstTable[0x05] = cpu.addEAXImm32
-	cpu.InstTable[0x3B] = cpu.cmpR32RM32
+	cpu.InstTable[0x3b] = cpu.cmpR32RM32
+
 	for i := 0; i < 8; i++ {
 		cpu.InstTable[0x50+i] = cpu.pushReg
 	}
+
 	for i := 0; i < 8; i++ {
 		cpu.InstTable[0x58+i] = cpu.popReg
 	}
 
 	cpu.InstTable[0x68] = cpu.pushImm32
 	cpu.InstTable[0x6a] = cpu.pushImm8
+	cpu.InstTable[0x70] = cpu.jo
+	cpu.InstTable[0x71] = cpu.jno
+	cpu.InstTable[0x72] = cpu.jc
+	cpu.InstTable[0x73] = cpu.jnc
+	cpu.InstTable[0x74] = cpu.jz
+	cpu.InstTable[0x75] = cpu.jnz
+	cpu.InstTable[0x78] = cpu.js
+	cpu.InstTable[0x79] = cpu.jns
+	cpu.InstTable[0x7c] = cpu.jl
+	cpu.InstTable[0x7e] = cpu.jle
 	cpu.InstTable[0x81] = cpu.code81
 	cpu.InstTable[0x83] = cpu.code83
 	cpu.InstTable[0x89] = cpu.movRM32R32
@@ -63,6 +75,107 @@ func (cpu *CPU) cmpR32RM32() {
 	rm32 := modrm.getRM32(cpu)
 	result := uint64(r32) - uint64(rm32)
 	reg.updateEFLAGS(r32, rm32, result)
+}
+
+func (cpu *CPU) jo() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	var diff uint32 = 2
+	if reg.IsOF() {
+		diff += uint32(mem.GetSignCode8(1))
+	}
+	reg.EIP += diff
+}
+
+func (cpu *CPU) jno() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	var diff uint32 = 2
+	if !reg.IsOF() {
+		diff += uint32(mem.GetSignCode8(1))
+	}
+	reg.EIP += diff
+}
+
+func (cpu *CPU) jc() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	var diff uint32 = 2
+	if reg.IsCF() {
+		diff += uint32(mem.GetSignCode8(1))
+	}
+	reg.EIP += diff
+}
+
+func (cpu *CPU) jnc() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	var diff uint32 = 2
+	if !reg.IsCF() {
+		diff += uint32(mem.GetSignCode8(1))
+	}
+	reg.EIP += diff
+}
+
+func (cpu *CPU) jz() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	var diff uint32 = 2
+	if reg.IsZF() {
+		diff += uint32(mem.GetSignCode8(1))
+	}
+	reg.EIP += diff
+}
+
+func (cpu *CPU) jnz() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	var diff uint32 = 2
+	if !reg.IsZF() {
+		diff += uint32(mem.GetSignCode8(1))
+	}
+	reg.EIP += diff
+}
+
+func (cpu *CPU) js() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	var diff uint32 = 2
+	if reg.IsSF() {
+		diff += uint32(mem.GetSignCode8(1))
+	}
+	reg.EIP += diff
+}
+
+func (cpu *CPU) jns() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	var diff uint32 = 2
+	if !reg.IsSF() {
+		diff += uint32(mem.GetSignCode8(1))
+	}
+	reg.EIP += diff
+}
+
+func (cpu *CPU) jl() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	var diff uint32 = 2
+	if reg.IsSF() != reg.IsOF() {
+		diff += uint32(mem.GetSignCode8(1))
+	}
+	reg.EIP += diff
+}
+
+// jump if less or equal
+func (cpu *CPU) jle() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	var diff uint32 = 2
+	if reg.IsZF() || (reg.IsSF() != reg.IsOF()) {
+		diff += uint32(mem.GetSignCode8(1))
+	}
+	reg.EIP += diff
 }
 
 func (cpu *CPU) subRM32Imm32(modrm *ModRM) {
