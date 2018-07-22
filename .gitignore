@@ -5,8 +5,9 @@
 *.so
 *.dylib
 main
+samples/simple_branch
 samples/simple_call
-samples/modrm_parse
+samples/modrm_parse_test
 
 
 # Test binary, build with `go test -c`
