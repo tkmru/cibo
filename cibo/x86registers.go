@@ -152,7 +152,8 @@ func (r *X86registers) SetCF() {
 }
 
 func (r *X86registers) RemoveCF() {
-	r.EFLAGS = r.EFLAGS ^ 1
+	mask := ^1
+	r.EFLAGS &= uint32(mask)
 }
 
 // Parity Flag (2bit)
@@ -165,7 +166,8 @@ func (r *X86registers) SetPF() {
 }
 
 func (r *X86registers) RemovePF() {
-	r.EFLAGS = r.EFLAGS ^ 4
+	mask := ^4
+	r.EFLAGS &= uint32(mask)
 }
 
 // Adjust Flag (4bit)
@@ -178,7 +180,8 @@ func (r *X86registers) SetAF() {
 }
 
 func (r *X86registers) RemoveAF() {
-	r.EFLAGS = r.EFLAGS ^ 16
+	mask := ^16
+	r.EFLAGS &= uint32(mask)
 }
 
 // Zero Flag (6bit)
@@ -191,7 +194,8 @@ func (r *X86registers) SetZF() {
 }
 
 func (r *X86registers) RemoveZF() {
-	r.EFLAGS = r.EFLAGS ^ 64
+	mask := ^64
+	r.EFLAGS &= uint32(mask)
 }
 
 // Sign Flag (7bit)
@@ -204,7 +208,8 @@ func (r *X86registers) SetSF() {
 }
 
 func (r *X86registers) RemoveSF() {
-	r.EFLAGS = r.EFLAGS ^ 128
+	mask := ^128
+	r.EFLAGS &= uint32(mask)
 }
 
 // Trap Flag (8bit)
@@ -217,7 +222,9 @@ func (r *X86registers) SetTF() {
 }
 
 func (r *X86registers) RemoveTF() {
-	r.EFLAGS = r.EFLAGS ^ 256
+	mask := ^256
+	r.EFLAGS &= uint32(mask)
+
 }
 
 // Interrupt Enable Flag (9bit)
@@ -230,7 +237,8 @@ func (r *X86registers) SetIF() {
 }
 
 func (r *X86registers) RemoveIF() {
-	r.EFLAGS = r.EFLAGS ^ 512
+	mask := ^512
+	r.EFLAGS &= uint32(mask)
 }
 
 // Direction Flag (10bit)
@@ -243,7 +251,8 @@ func (r *X86registers) SetDF() {
 }
 
 func (r *X86registers) RemoveDF() {
-	r.EFLAGS = r.EFLAGS ^ 1024
+	mask := ^1024
+	r.EFLAGS &= uint32(mask)
 }
 
 // Overflow Flag (11bit)
@@ -256,7 +265,8 @@ func (r *X86registers) SetOF() {
 }
 
 func (r *X86registers) RemoveOF() {
-	r.EFLAGS = r.EFLAGS ^ 2048
+	mask := ^2048
+	r.EFLAGS &= uint32(mask)
 }
 
 // I/O Privilege Level Field (12-13bit)
@@ -269,7 +279,8 @@ func (r *X86registers) SetIOPL() {
 }
 
 func (r *X86registers) RemoveIOPL() {
-	r.EFLAGS = r.EFLAGS ^ 4096 // TODO: fix later
+	mask := ^4096 // TODO: fix later
+	r.EFLAGS &= uint32(mask)
 }
 
 // Nested Task Flag (14bit)
@@ -282,7 +293,8 @@ func (r *X86registers) SetNT() {
 }
 
 func (r *X86registers) RemoveNT() {
-	r.EFLAGS = r.EFLAGS ^ 16384
+	mask := ^16384
+	r.EFLAGS &= uint32(mask)
 }
 
 // Resume Flag (16bit)
@@ -295,7 +307,8 @@ func (r *X86registers) SetRF() {
 }
 
 func (r *X86registers) RemoveRF() {
-	r.EFLAGS = r.EFLAGS ^ 65536
+	mask := ^65536
+	r.EFLAGS &= uint32(mask)
 }
 
 // Virtual x86 Mode Flag (17bit)
@@ -308,7 +321,8 @@ func (r *X86registers) SetVM() {
 }
 
 func (r *X86registers) RemoveVM() {
-	r.EFLAGS = r.EFLAGS ^ 131072
+	mask := ^131072
+	r.EFLAGS &= uint32(mask)
 }
 
 // Alignment Check Flag (18bit)
@@ -321,7 +335,8 @@ func (r *X86registers) SetAC() {
 }
 
 func (r *X86registers) RemoveAC() {
-	r.EFLAGS = r.EFLAGS ^ 262144
+	mask := ^262144
+	r.EFLAGS &= uint32(mask)
 }
 
 // Virtual Interrupt Flag (19bit)
@@ -334,7 +349,8 @@ func (r *X86registers) SetVIF() {
 }
 
 func (r *X86registers) RemoveVIF() {
-	r.EFLAGS = r.EFLAGS ^ 524288
+	mask := ^524288
+	r.EFLAGS &= uint32(mask)
 }
 
 // Virtual Interrupt Pending Flag (20bit)
@@ -347,7 +363,8 @@ func (r *X86registers) SetVIP() {
 }
 
 func (r *X86registers) RemoveVIP() {
-	r.EFLAGS = r.EFLAGS ^ 1048576
+	mask := ^1048576
+	r.EFLAGS &= uint32(mask)
 }
 
 // Identification Flag (21bit)
@@ -360,5 +377,6 @@ func (r *X86registers) SetID() {
 }
 
 func (r *X86registers) RemoveID() {
-	r.EFLAGS = r.EFLAGS ^ 2097152
+	mask := ^2097152
+	r.EFLAGS &= uint32(mask)
 }
