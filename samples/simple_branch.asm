@@ -4,10 +4,10 @@ BITS 32
     cmp eax, 0x2
     jnz not_equal
 
+equal:
+    jmp 0
+
 not_equal:
     mov eax, 0x2
     cmp eax, 0x2
     jz equal
-
-equal:
-    jmp 0

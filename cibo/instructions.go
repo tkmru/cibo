@@ -9,8 +9,8 @@ func (cpu *CPU) createTable() {
 	cpu.InstTable[0x01] = cpu.addRM32R32
 	cpu.InstTable[0x05] = cpu.addEAXImm32
 	cpu.InstTable[0x3b] = cpu.cmpR32RM32
-	// cpu.InstTable[0x3c] = cpu.cmpALImm8
-	// cpu.InstTable[0x3d] = cpu.cmpEAXImm32
+	cpu.InstTable[0x3c] = cpu.cmpALImm8
+	cpu.InstTable[0x3d] = cpu.cmpEAXImm32
 
 	for i := 0; i < 8; i++ {
 		cpu.InstTable[0x50+i] = cpu.pushReg
@@ -77,6 +77,26 @@ func (cpu *CPU) cmpR32RM32() {
 	rm32 := modrm.getRM32(cpu)
 	result := uint64(r32) - uint64(rm32)
 	reg.updateEFLAGS(r32, rm32, result)
+}
+
+func (cpu *CPU) cmpALImm8() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode8(1)
+	al := reg.EAX & 0xff
+	result := uint64(al) - uint64(value)
+	reg.updateEFLAGS(uint32(al), uint32(value), result)
+	reg.EIP += 2
+}
+
+func (cpu *CPU) cmpEAXImm32() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode32(1)
+	eax := reg.EAX
+	result := uint64(eax) - uint64(value)
+	reg.updateEFLAGS(eax, value, result)
+	reg.EIP += 5
 }
 
 func (cpu *CPU) jo() {
