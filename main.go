@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./cibo"
+	"github.com/tkmru/cibo/cibo"
 	"io"
 	"io/ioutil"
 	"log"
@@ -19,7 +19,7 @@ func main() {
 	fileinfo, staterr := os.Stat(filePath)
 	if staterr != nil {
 		log.Fatalln(staterr)
-  }
+	}
 	memSize := fileinfo.Size()
 	beginAddress := 0x7c00
 	emu := cibo.NewEmulator(beginAddress, memSize)
@@ -37,7 +37,6 @@ func main() {
 	log.Println("==================== registers ====================")
 	reg.Dump()
 }
-
 
 func getPath() string {
 	var arg string
