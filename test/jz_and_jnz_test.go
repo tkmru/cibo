@@ -1,7 +1,7 @@
 package test
 
 import (
-	"github.com/tkmru/cibo/cibo"
+	"github.com/tkmru/cibo/core"
 	"testing"
 )
 

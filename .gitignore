@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+cibo
 main
 samples/simple_branch
 samples/simple_call

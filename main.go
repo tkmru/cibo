@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/tkmru/cibo/cibo"
+	"github.com/tkmru/cibo/core"
 	"io"
 	"io/ioutil"
 	"log"
