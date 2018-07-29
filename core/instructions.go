@@ -76,7 +76,7 @@ func (cpu *CPU) cmpR32RM32() {
 	r32 := modrm.getR32(cpu)
 	rm32 := modrm.getRM32(cpu)
 	result := uint64(r32) - uint64(rm32)
-	reg.updateEFLAGS(r32, rm32, result)
+	reg.updateEflagsSub(r32, rm32, result)
 }
 
 func (cpu *CPU) cmpALImm8() {
@@ -85,7 +85,7 @@ func (cpu *CPU) cmpALImm8() {
 	value := mem.GetCode8(1)
 	al := reg.EAX & 0xff
 	result := uint64(al) - uint64(value)
-	reg.updateEFLAGS(uint32(al), uint32(value), result)
+	reg.updateEflagsSub(uint32(al), uint32(value), result)
 	reg.EIP += 2
 }
 
@@ -95,7 +95,7 @@ func (cpu *CPU) cmpEAXImm32() {
 	value := mem.GetCode32(1)
 	eax := reg.EAX
 	result := uint64(eax) - uint64(value)
-	reg.updateEFLAGS(eax, value, result)
+	reg.updateEflagsSub(eax, value, result)
 	reg.EIP += 5
 }
 
@@ -246,17 +246,17 @@ func (cpu *CPU) subRM32Imm8(modrm *ModRM) {
 	reg.EIP += 1
 	result := uint64(rm32) - uint64(imm8)
 	modrm.setRM32(cpu, uint32(result))
-	reg.updateEFLAGS(rm32, uint32(imm8), result)
+	reg.updateEflagsSub(rm32, uint32(imm8), result)
 }
 
 func (cpu *CPU) cmpRM32Imm8(modrm *ModRM) {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	rm32 := modrm.getRM32(cpu)
-	imm8 := uint32(mem.GetSignCode8(0))
+	imm8 := mem.GetSignCode8(0)
 	reg.EIP += 1
 	result := uint64(rm32) - uint64(imm8)
-	reg.updateEFLAGS(rm32, imm8, result)
+	reg.updateEflagsSub(rm32, uint32(imm8), result)
 }
 
 func (cpu *CPU) code83() {
