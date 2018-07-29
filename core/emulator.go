@@ -1,6 +1,12 @@
 package cibo
 
-import "log"
+import (
+	"io"
+	"io/ioutil"
+	"log"
+	"os"
+	"path"
+)
 
 type Emulator struct {
 	CPU         *CPU
@@ -16,6 +22,25 @@ func NewEmulator(beginAddress int, memSize int64) *Emulator {
 	reg := &emu.CPU.X86registers
 	reg.EIP = uint32(beginAddress)
 	return &emu
+}
+
+func NewEmulatorWithLoadFile(beginAddress int, path string) *Emulator {
+	log.SetFlags(0)
+
+	filePath := checkPath(path)
+	fileinfo, staterr := os.Stat(filePath)
+	if staterr != nil {
+		log.Fatalln(staterr)
+	}
+	memSize := fileinfo.Size()
+	emu := NewEmulator(beginAddress, memSize)
+	RAM := emu.RAM
+	f, _ := os.Open(filePath)
+	copySize, _ := io.ReadFull(f, RAM)
+	if int64(copySize) != fileinfo.Size() {
+		log.Fatalln("size not matched")
+	}
+	return emu
 }
 
 func (emu *Emulator) Run() {
@@ -39,5 +64,23 @@ func (emu *Emulator) Run() {
 			log.Printf("No mapping area: 0x%X\n", reg.EIP)
 			break
 		}
+	}
+}
+
+func checkPath(filePath string) string {
+	info, err := os.Stat(filePath)
+	if err != nil {
+		log.Fatalln("no binary file specified or found")
+	}
+	if info.IsDir() {
+		files, err := ioutil.ReadDir(filePath)
+		if err != nil {
+			log.Fatalln("no binary file specified or found")
+		}
+		name := files[0].Name()
+		return path.Join(filePath, name)
+
+	} else {
+		return filePath
 	}
 }

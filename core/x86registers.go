@@ -80,6 +80,7 @@ func (r X86registers) Dump() {
 	v := reflect.ValueOf(&r).Elem()
 	t := v.Type()
 
+	fmt.Println("==================== registers ====================")
 	for i := 0; i < 24; i++ {
 		registerName := t.Field(i).Name
 		registerValue := v.Field(i).Interface()
