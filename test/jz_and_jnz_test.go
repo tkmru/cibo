@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestJnz(t *testing.T) {
+func TestJzAndJnz(t *testing.T) {
 	beginAddress := 0x7c00
 	emu := cibo.NewEmulator(beginAddress, 29)
 	cpu := emu.CPU

@@ -135,7 +135,7 @@ func (r *X86registers) updateEflagsSub(v1 uint32, v2 uint32, result uint64) {
 		r.RemoveSF()
 	}
 
-	if ((sign1^sign2 == 1) && (sign1^signr == 1)){
+	if (sign1^sign2 == 1) && (sign1^signr == 1) {
 		r.SetOF()
 	} else {
 		r.RemoveOF()
@@ -165,7 +165,7 @@ func (r *X86registers) updateEflagsAdd(v1 uint32, v2 uint32, result uint64) {
 		r.RemoveSF()
 	}
 
-	if ((sign1 ^ sign2 == 0) && (sign1^signr == 1)) {
+	if (sign1^sign2 == 0) && (sign1^signr == 1) {
 		r.SetOF()
 	} else {
 		r.RemoveOF()
