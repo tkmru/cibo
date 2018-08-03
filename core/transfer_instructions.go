@@ -37,3 +37,8 @@ func (cpu *CPU) movRM32Imm32() {
 	reg.EIP += 4
 	modrm.setRM32(cpu, value)
 }
+
+func (cpu *CPU) nop() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+}
