@@ -104,12 +104,30 @@ func (r *X86registers) GetByIndex(index uint8) uint32 {
 	return targetRegister.Interface().(uint32)
 }
 
+func (r *X86registers) Get8ByIndex(index uint8) uint8 {
+	registerName := registerIndex[index]
+	registersPointer := reflect.ValueOf(r) // pointer to struct - addressable
+	registers := registersPointer.Elem()   // struct
+	targetRegister := registers.FieldByName(registerName)
+	return uint8(targetRegister.Interface().(uint32) & 0xFF)
+}
+
 func (r *X86registers) SetByIndex(index uint8, value uint32) {
 	registerName := registerIndex[index]
 	registersPointer := reflect.ValueOf(r) // pointer to struct - addressable
 	registers := registersPointer.Elem()   // struct
 	targetRegister := registers.FieldByName(registerName)
 	targetRegister.Set(reflect.ValueOf(value))
+}
+
+func (r *X86registers) Set8ByIndex(index uint8, value uint8) {
+	registerName := registerIndex[index]
+	registersPointer := reflect.ValueOf(r) // pointer to struct - addressable
+	registers := registersPointer.Elem()   // struct
+	targetRegister := registers.FieldByName(registerName)
+	// Rewrite only lower 8 bits
+	value32 := (targetRegister.Interface().(uint32) & 0xFFFFFF00) + uint32(value)
+	targetRegister.Set(reflect.ValueOf(value32))
 }
 
 func (r *X86registers) updateEflagsSub(v1 uint32, v2 uint32, result uint64) {

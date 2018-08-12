@@ -6,6 +6,7 @@ type Memory interface {
 	Read(address uint32) byte
 	Read32(address uint32) uint32
 	Write(address uint32, value byte)
+	Write8(address uint32, value uint8)
 	Write32(address uint32, value uint32)
 	GetCode8(index int) uint8
 	GetSignCode8(index int) int8
@@ -41,6 +42,10 @@ func (mem *cpuMemory) Write(address uint32, value byte) {
 	emu := mem.emulator
 	index := address - uint32(emu.BaseAddress)
 	mem.emulator.RAM[index] = value
+}
+
+func (mem *cpuMemory) Write8(address uint32, value uint8) {
+	mem.Write(address, byte(value))
 }
 
 func (mem *cpuMemory) Write32(address uint32, value uint32) {

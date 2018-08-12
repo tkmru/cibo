@@ -29,9 +29,14 @@ func (cpu *CPU) createTable() {
 	cpu.InstTable[0x7e] = cpu.jle
 	cpu.InstTable[0x81] = cpu.code81
 	cpu.InstTable[0x83] = cpu.code83
+	cpu.InstTable[0x88] = cpu.movRM8R8
 	cpu.InstTable[0x89] = cpu.movRM32R32
 	cpu.InstTable[0x8b] = cpu.movR32RM32
 	cpu.InstTable[0x90] = cpu.nop
+
+	for i := 0; i < 8; i++ {
+		cpu.InstTable[0xb0+i] = cpu.movR8Imm8
+	}
 
 	for i := 0; i < 8; i++ {
 		cpu.InstTable[0xb8+i] = cpu.movR32Imm32
