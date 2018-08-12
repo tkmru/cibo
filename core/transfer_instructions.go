@@ -9,6 +9,15 @@ func (cpu *CPU) movRM8R8() {
 	modrm.setRM8(cpu, r8)
 }
 
+func (cpu *CPU) movR8RM8() {
+	var modrm ModRM
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	modrm.parse(cpu)
+	rm8 := modrm.getRM8(cpu)
+	modrm.setR8(cpu, rm8)
+}
+
 func (cpu *CPU) movRM32R32() {
 	var modrm ModRM
 	reg := &cpu.X86registers

@@ -4,6 +4,7 @@ package cibo
 
 type Memory interface {
 	Read(address uint32) byte
+	Read8(address uint32) uint8
 	Read32(address uint32) uint32
 	Write(address uint32, value byte)
 	Write8(address uint32, value uint8)
@@ -28,6 +29,10 @@ func (mem *cpuMemory) Read(address uint32) byte {
 	emu := mem.emulator
 	index := address - uint32(emu.BaseAddress)
 	return mem.emulator.RAM[index]
+}
+
+func (mem *cpuMemory) Read8(address uint32) uint8 {
+	return uint8(mem.Read(address))
 }
 
 func (mem *cpuMemory) Read32(address uint32) uint32 {
