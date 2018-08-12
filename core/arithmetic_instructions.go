@@ -54,6 +54,15 @@ func (cpu *CPU) cmpEAXImm32() {
 	reg.EIP += 5
 }
 
+func (cpu *CPU) incR32() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	index := mem.GetCode8(0) - 0x40
+	value := reg.GetByIndex(index) + 1
+	reg.SetByIndex(index, value)
+	reg.EIP += 1
+}
+
 func (cpu *CPU) subRM32Imm32(modrm *ModRM) {
 	reg := &cpu.X86registers
 	mem := cpu.Memory

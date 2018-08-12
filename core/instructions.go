@@ -8,6 +8,10 @@ func (cpu *CPU) createTable() {
 	cpu.InstTable[0x3d] = cpu.cmpEAXImm32
 
 	for i := 0; i < 8; i++ {
+		cpu.InstTable[0x40+i] = cpu.incR32
+	}
+
+	for i := 0; i < 8; i++ {
 		cpu.InstTable[0x50+i] = cpu.pushReg
 	}
 
