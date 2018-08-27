@@ -53,6 +53,8 @@ func (cpu *CPU) createTable() {
 	cpu.InstTable[0xe8] = cpu.callRelative
 	cpu.InstTable[0xe9] = cpu.nearJump
 	cpu.InstTable[0xeb] = cpu.shortJump
+	cpu.InstTable[0xec] = cpu.inAlDx
+  cpu.InstTable[0xee] = cpu.outDxAl
 	cpu.InstTable[0xff] = cpu.codeFF
 }
 
@@ -109,4 +111,39 @@ func (cpu *CPU) callRelative() {
 	diff := mem.GetSignCode32(1)
 	mem.Push(reg.EIP + 5)
 	reg.EIP += uint32(diff + 5)
+}
+
+func (cpu *CPU) inALDX() {
+	reg := &cpu.X86registers
+  var address uint16 = reg.EDX & 0xffff
+  var value uint8 = ioIn8(address)
+	AH := reg.EAX & 0xff00
+	reg.EAX = (AH + value)
+  reg.EIP += 1
+}
+
+func (cpu *CPU) outDXAL() {
+	reg := &cpu.X86registers
+	var address uint16 = reg.EDX & 0xffff
+	AL := reg.EAX & 0xff
+	ioOut8(address, AL);
+	reg.EIP += 1
+}
+
+func ioIn8(address uint16) {
+    switch (address) {
+    case 0x03f8:
+        return getchar();
+        break;
+    default:
+        return 0;
+    }
+}
+
+func ioOut8(address uint16, value uint8) {
+    switch (address) {
+    case 0x03f8:
+        putchar(value);
+        break;
+    }
 }
