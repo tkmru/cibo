@@ -1,5 +1,10 @@
 package cibo
 
+import (
+	"fmt"
+	"os"
+)
+
 func (cpu *CPU) createTable() {
 	cpu.InstTable[0x01] = cpu.addRM32R32
 	cpu.InstTable[0x05] = cpu.addEAXImm32
@@ -53,8 +58,8 @@ func (cpu *CPU) createTable() {
 	cpu.InstTable[0xe8] = cpu.callRelative
 	cpu.InstTable[0xe9] = cpu.nearJump
 	cpu.InstTable[0xeb] = cpu.shortJump
-	cpu.InstTable[0xec] = cpu.inAlDx
-  cpu.InstTable[0xee] = cpu.outDxAl
+	cpu.InstTable[0xec] = cpu.inALDX
+	cpu.InstTable[0xee] = cpu.outDXAL
 	cpu.InstTable[0xff] = cpu.codeFF
 }
 
@@ -115,35 +120,36 @@ func (cpu *CPU) callRelative() {
 
 func (cpu *CPU) inALDX() {
 	reg := &cpu.X86registers
-  var address uint16 = reg.EDX & 0xffff
-  var value uint8 = ioIn8(address)
+	var address uint16 = uint16(reg.EDX & 0xffff)
+	var value uint8 = ioIn8(address)
 	AH := reg.EAX & 0xff00
-	reg.EAX = (AH + value)
-  reg.EIP += 1
+	reg.EAX = (AH + uint32(value))
+	reg.EIP += 1
 }
 
 func (cpu *CPU) outDXAL() {
 	reg := &cpu.X86registers
-	var address uint16 = reg.EDX & 0xffff
-	AL := reg.EAX & 0xff
-	ioOut8(address, AL);
+	var address uint16 = uint16(reg.EDX & 0xffff)
+	AL := uint8(reg.EAX & 0xff)
+	ioOut8(address, AL)
 	reg.EIP += 1
 }
 
-func ioIn8(address uint16) {
-    switch (address) {
-    case 0x03f8:
-        return getchar();
-        break;
-    default:
-        return 0;
-    }
+func ioIn8(address uint16) uint8 {
+	switch address {
+	case 0x03f8:
+		var input []byte = make([]byte, 1)
+		os.Stdin.Read(input)
+		return uint8(input[0])
+		break
+	}
+	return 0
 }
 
-func ioOut8(address uint16, value uint8) {
-    switch (address) {
-    case 0x03f8:
-        putchar(value);
-        break;
-    }
+func ioOut8(address uint16, ascii uint8) {
+	switch address {
+	case 0x03f8:
+		fmt.Print(string(ascii))
+		break
+	}
 }
