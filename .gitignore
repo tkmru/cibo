@@ -9,7 +9,7 @@ main
 samples/asm/simple_branch
 samples/asm/simple_call
 samples/asm/modrm_parse_test
-
+samples/asm/echo_input
 
 # Test binary, build with `go test -c`
 *.test
