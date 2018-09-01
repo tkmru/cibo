@@ -43,26 +43,43 @@ func NewEmulatorWithLoadFile(beginAddress int, path string) *Emulator {
 	return emu
 }
 
-func (emu *Emulator) Run() {
+func (emu *Emulator) Run(debugFlag bool) {
 	ramSize := len(emu.RAM)
 	mappingEnd := emu.BaseAddress + ramSize
 	cpu := emu.CPU
 	mem := cpu.Memory
 	reg := &cpu.X86registers
-	for i := 0; i < int(ramSize); i++ {
-		code := uint8(mem.GetCode8(0))
-		log.Printf("EIP = 0x%X, Opcode = 0x%02X\n", reg.EIP, code)
+	if debugFlag {
+		for i := 0; i < int(ramSize); i++ {
+			code := uint8(mem.GetCode8(0))
+			log.Printf("EIP = 0x%X, Opcode = 0x%02X\n", reg.EIP, code)
 
-		if cpu.InstTable[code] == nil {
-			log.Fatalf("Not Implemented: 0x%x\n", code)
-			break
+			if cpu.InstTable[code] == nil {
+				log.Fatalf("Not Implemented: 0x%x\n", code)
+				break
+			}
+
+			cpu.InstTable[code]()
+
+			if (reg.EIP <= uint32(emu.BaseAddress)) || (uint32(mappingEnd) <= reg.EIP) {
+				log.Printf("No mapping area: 0x%X\n", reg.EIP)
+				break
+			}
 		}
+	} else {
+		for i := 0; i < int(ramSize); i++ {
+			code := uint8(mem.GetCode8(0))
+			if cpu.InstTable[code] == nil {
+				log.Fatalf("Not Implemented: 0x%x\n", code)
+				break
+			}
 
-		cpu.InstTable[code]()
+			cpu.InstTable[code]()
 
-		if (reg.EIP <= uint32(emu.BaseAddress)) || (uint32(mappingEnd) <= reg.EIP) {
-			log.Printf("No mapping area: 0x%X\n", reg.EIP)
-			break
+			if (reg.EIP <= uint32(emu.BaseAddress)) || (uint32(mappingEnd) <= reg.EIP) {
+				log.Printf("No mapping area: 0x%X\n", reg.EIP)
+				break
+			}
 		}
 	}
 }
