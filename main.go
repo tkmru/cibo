@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/tkmru/cibo/cmd"
 	"os"
+	"github.com/tkmru/cibo/cmd"
 )
 
 func main() {

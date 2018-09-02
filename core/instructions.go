@@ -55,6 +55,9 @@ func (cpu *CPU) createTable() {
 	cpu.InstTable[0xc3] = cpu.ret
 	cpu.InstTable[0xc7] = cpu.movRM32Imm32
 	cpu.InstTable[0xc9] = cpu.leave
+	/*
+		0xd8 - 0xdf: x87 FPU Instructions
+	*/
 	cpu.InstTable[0xe8] = cpu.callRelative
 	cpu.InstTable[0xe9] = cpu.nearJump
 	cpu.InstTable[0xeb] = cpu.shortJump
@@ -136,6 +139,7 @@ func (cpu *CPU) outDXAL() {
 }
 
 func ioIn8(address uint16) uint8 {
+	fmt.Println("[cibo] asking for input:")
 	switch address {
 	case 0x03f8:
 		var input []byte = make([]byte, 1)
@@ -149,7 +153,7 @@ func ioIn8(address uint16) uint8 {
 func ioOut8(address uint16, ascii uint8) {
 	switch address {
 	case 0x03f8:
-		fmt.Print(string(ascii))
+		fmt.Println(string(ascii))
 		break
 	}
 }
