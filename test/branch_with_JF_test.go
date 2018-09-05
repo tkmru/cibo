@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestJzAndJnz(t *testing.T) {
+func TestHandlingZF(t *testing.T) {
 	beginAddress := 0x7c00
 	emu := cibo.NewEmulator(beginAddress, 29)
 	cpu := emu.CPU
@@ -28,7 +28,7 @@ func TestJzAndJnz(t *testing.T) {
 	*/
 
 	reg.Init()
-	emu.Run()
+	emu.Run(false)
 
 	actual := reg.EAX
 	expected := uint32(2)
