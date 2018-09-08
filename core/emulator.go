@@ -12,19 +12,27 @@ type Emulator struct {
 	CPU         *CPU
 	RAM         []byte
 	BaseAddress int
+	debugFlag bool
 	// TODO: add device
 }
 
-func NewEmulator(beginAddress int, memSize int64) *Emulator {
+func NewEmulator(beginAddress int, memSize int64, options ...interface{}) *Emulator {
 	ram := make([]byte, memSize)
-	emu := Emulator{nil, ram, beginAddress}
+	debugFlag := false
+	for _, option := range options {
+    switch v := option.(type) {
+			case bool:
+        debugFlag = v
+    }
+	}
+	emu := Emulator{nil, ram, beginAddress, debugFlag}
 	emu.CPU = NewCPU(&emu)
 	reg := &emu.CPU.X86registers
 	reg.EIP = uint32(beginAddress)
 	return &emu
 }
 
-func NewEmulatorWithLoadFile(beginAddress int, path string) *Emulator {
+func NewEmulatorWithLoadFile(beginAddress int, path string, options ...interface{}) *Emulator {
 	log.SetFlags(0)
 
 	filePath := checkPath(path)
@@ -33,7 +41,14 @@ func NewEmulatorWithLoadFile(beginAddress int, path string) *Emulator {
 		log.Fatalln(staterr)
 	}
 	memSize := fileinfo.Size()
-	emu := NewEmulator(beginAddress, memSize)
+	debugFlag := false
+	for _, option := range options {
+    switch v := option.(type) {
+			case bool:
+        debugFlag = v
+    }
+	}
+	emu := NewEmulator(beginAddress, memSize, debugFlag)
 	RAM := emu.RAM
 	f, _ := os.Open(filePath)
 	copySize, _ := io.ReadFull(f, RAM)
@@ -43,13 +58,13 @@ func NewEmulatorWithLoadFile(beginAddress int, path string) *Emulator {
 	return emu
 }
 
-func (emu *Emulator) Run(debugFlag bool) {
+func (emu *Emulator) Run() {
 	ramSize := len(emu.RAM)
 	mappingEnd := emu.BaseAddress + ramSize
 	cpu := emu.CPU
 	mem := cpu.Memory
 	reg := &cpu.X86registers
-	if debugFlag {
+	if emu.debugFlag {
 		for i := 0; i < int(ramSize); i++ {
 			code := uint8(mem.GetCode8(0))
 			log.Printf("EIP = 0x%X, Opcode = 0x%02X\n", reg.EIP, code)

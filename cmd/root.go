@@ -25,12 +25,12 @@ var rootCmd = &cobra.Command{
 		path = args[0]
 
 		beginAddress := 0x7c00
-		emu := cibo.NewEmulatorWithLoadFile(beginAddress, path)
+		emu := cibo.NewEmulatorWithLoadFile(beginAddress, path, debugFlag)
 		cpu := emu.CPU
 		reg := &cpu.X86registers
 
 		reg.Init()
-		emu.Run(debugFlag)
+		emu.Run()
 		reg.Dump()
 	},
 }
