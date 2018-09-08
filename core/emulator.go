@@ -12,7 +12,7 @@ type Emulator struct {
 	CPU         *CPU
 	RAM         []byte
 	BaseAddress int
-	debugFlag bool
+	debugFlag   bool
 	// TODO: add device
 }
 
@@ -20,10 +20,10 @@ func NewEmulator(beginAddress int, memSize int64, options ...interface{}) *Emula
 	ram := make([]byte, memSize)
 	debugFlag := false
 	for _, option := range options {
-    switch v := option.(type) {
-			case bool:
-        debugFlag = v
-    }
+		switch v := option.(type) {
+		case bool:
+			debugFlag = v
+		}
 	}
 	emu := Emulator{nil, ram, beginAddress, debugFlag}
 	emu.CPU = NewCPU(&emu)
@@ -43,10 +43,10 @@ func NewEmulatorWithLoadFile(beginAddress int, path string, options ...interface
 	memSize := fileinfo.Size()
 	debugFlag := false
 	for _, option := range options {
-    switch v := option.(type) {
-			case bool:
-        debugFlag = v
-    }
+		switch v := option.(type) {
+		case bool:
+			debugFlag = v
+		}
 	}
 	emu := NewEmulator(beginAddress, memSize, debugFlag)
 	RAM := emu.RAM
