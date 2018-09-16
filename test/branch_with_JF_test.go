@@ -1,8 +1,12 @@
 package test
 
 import (
-	"github.com/tkmru/cibo/core"
+	"fmt"
 	"testing"
+	"unsafe"
+
+	"github.com/keystone-engine/keystone/bindings/go/keystone"
+	"github.com/tkmru/cibo/core"
 )
 
 func TestHandlingZF(t *testing.T) {
@@ -11,21 +15,28 @@ func TestHandlingZF(t *testing.T) {
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 
-	emu.RAM = []byte{0xb8, 0x01, 0x00, 0x00, 0x00, 0x3d, 0x02, 0x00, 0x00, 0x00, 0x75, 0x05, 0xe9, 0xef, 0x83, 0xff,
-		0xff, 0xb8, 0x02, 0x00, 0x00, 0x00, 0x3d, 0x02, 0x00, 0x00, 0x00, 0x74, 0xef}
-	/*
-	    mov eax, 0x1
-	    cmp eax, 0x2
-	    jnz not_equal
+	assembly := "" +
+		"  mov eax, 0x1;" +
+		"  cmp eax, 0x2;" +
+		"  jnz not_equal;" +
+		"equal:;" +
+		"  jmp 0;" +
+		"not_equal:;" +
+		"  mov eax, 0x2;" +
+		"  cmp eax, 0x2;" +
+		"  jz equal"
 
-	  equal:
-	    jmp 0
+	ks, err := keystone.New(keystone.ARCH_X86, keystone.MODE_32)
+	if err != nil {
+		panic(err)
+	}
+	defer ks.Close()
 
-	  not_equal:
-	    mov eax, 0x2
-	    cmp eax, 0x2
-	    jz equal
-	*/
+	if insn, _, ok := ks.Assemble(assembly, 0); !ok {
+		panic(fmt.Errorf("Could not assemble instruction"))
+	} else {
+		emu.RAM = (*(*[]byte)(unsafe.Pointer(&insn)))
+	}
 
 	reg.Init()
 	emu.Run()
