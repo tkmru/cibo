@@ -6,7 +6,7 @@ import (
 
 func main() {
 	beginAddress := 0x7c00
-	emu := cibo.NewEmulator(beginAddress, 29, true)
+	emu := cibo.NewEmulator(32, beginAddress, 29, true)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 

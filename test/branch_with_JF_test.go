@@ -11,7 +11,8 @@ import (
 
 func TestHandlingZF(t *testing.T) {
 	beginAddress := 0x7c00
-	emu := cibo.NewEmulator(beginAddress, 29, true)
+	bitMode := 32
+	emu := cibo.NewEmulator(bitMode, beginAddress, 29, true)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 

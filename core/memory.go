@@ -29,7 +29,7 @@ func NewCPUMemory(emulator *Emulator) Memory {
 
 func (mem *cpuMemory) Read(address uint32) byte {
 	emu := mem.emulator
-	index := address - uint32(emu.BaseAddress)
+	index := address - uint32(emu.baseAddress)
 	return mem.emulator.RAM[index]
 }
 
@@ -55,7 +55,7 @@ func (mem *cpuMemory) Read32(address uint32) uint32 {
 
 func (mem *cpuMemory) Write(address uint32, value byte) {
 	emu := mem.emulator
-	index := address - uint32(emu.BaseAddress)
+	index := address - uint32(emu.baseAddress)
 	mem.emulator.RAM[index] = value
 }
 

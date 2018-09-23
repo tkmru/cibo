@@ -7,7 +7,8 @@ import (
 
 func TestHandlingLowBit(t *testing.T) {
 	beginAddress := 0x7c00
-	emu := cibo.NewEmulator(beginAddress, 29)
+	bitMode := 32
+	emu := cibo.NewEmulator(bitMode, beginAddress, 29)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 	reg.Init()
