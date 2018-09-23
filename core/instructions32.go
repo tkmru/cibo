@@ -6,7 +6,11 @@ import (
 )
 
 func (cpu *CPU) createTable32() {
+	cpu.Instr32[0x00] = cpu.addRM8R8
 	cpu.Instr32[0x01] = cpu.addRM32R32
+	cpu.Instr32[0x02] = cpu.addR8RM8
+	cpu.Instr32[0x03] = cpu.addR32RM32
+	cpu.Instr32[0x04] = cpu.addALImm8
 	cpu.Instr32[0x05] = cpu.addEAXImm32
 	cpu.Instr32[0x3b] = cpu.cmpR32RM32
 	cpu.Instr32[0x3c] = cpu.cmpALImm8

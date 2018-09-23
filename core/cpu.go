@@ -10,6 +10,7 @@ type CPU struct {
 
 func NewCPU(emulator *Emulator) *CPU {
 	cpu := CPU{Memory: NewCPUMemory(emulator)}
+	cpu.createTable16()
 	cpu.createTable32()
 	return &cpu
 }

@@ -15,6 +15,16 @@ func (cpu *CPU) addRM32R32() {
 	modrm.setRM32(cpu, rm32+r32)
 }
 
+func (cpu *CPU) addR32RM32() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r32 := modrm.getR32(cpu)
+	rm32 := modrm.getRM32(cpu)
+	modrm.setR32(cpu, rm32+r32)
+}
+
 func (cpu *CPU) addEAXImm32() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory

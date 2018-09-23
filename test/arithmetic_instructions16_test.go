@@ -9,25 +9,16 @@ import (
 	"github.com/tkmru/cibo/core"
 )
 
-func TestHandlingZF(t *testing.T) {
+func TestAddRM16R16(t *testing.T) {
 	beginAddress := 0x7c00
-	bitMode := 32
-	emu := cibo.NewEmulator(bitMode, beginAddress, 29, true)
+	bitMode := 16
+	emu := cibo.NewEmulator(bitMode, beginAddress, 2, true)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 
-	assembly := "" +
-		"  mov eax, 0x1;" +
-		"  cmp eax, 0x2;" +
-		"  jnz not_equal;" +
-		"equal:;" +
-		"  jmp 0;" +
-		"not_equal:;" +
-		"  mov eax, 0x2;" +
-		"  cmp eax, 0x2;" +
-		"  jz equal"
+	assembly := "add ax, bx"
 
-	ks, err := keystone.New(keystone.ARCH_X86, keystone.MODE_32)
+	ks, err := keystone.New(keystone.ARCH_X86, keystone.MODE_16)
 	if err != nil {
 		panic(err)
 	}
@@ -40,15 +31,13 @@ func TestHandlingZF(t *testing.T) {
 	}
 
 	reg.Init()
+	reg.EAX = 1
+	reg.EBX = 2
 	emu.Run()
 
 	actual := reg.EAX
-	expected := uint32(2)
+	expected := uint32(3)
 	if actual != expected {
-		t.Errorf("got EAX: %v\nexpected EAX: %v", actual, expected)
-	}
-
-	if !reg.IsZF() {
-		t.Errorf("not set ZF")
+		t.Errorf("got AX: %v\nexpected AX: %v", actual, expected)
 	}
 }
