@@ -8,3 +8,8 @@ The ```go get``` command compile the binary and place it in your ```$GOPATH/bin`
 ```
 go get github.com/tkmru/cibo
 ```
+
+## How to use
+
+```
+```
