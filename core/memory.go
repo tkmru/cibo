@@ -5,9 +5,11 @@ package cibo
 type Memory interface {
 	Read(address uint32) byte
 	Read8(address uint32) uint8
+	Read16(address uint32) uint16
 	Read32(address uint32) uint32
 	Write(address uint32, value byte)
 	Write8(address uint32, value uint8)
+	Write16(address uint32, value uint16)
 	Write32(address uint32, value uint32)
 	GetCode8(index int) uint8
 	GetSignCode8(index int) int8
@@ -35,6 +37,14 @@ func (mem *cpuMemory) Read8(address uint32) uint8 {
 	return uint8(mem.Read(address))
 }
 
+func (mem *cpuMemory) Read16(address uint32) uint16 {
+	var ret uint16
+	for i := 0; i < 2; i++ {
+		ret |= uint16(mem.Read(address+uint32(i))) << (8 * uint32(i))
+	}
+	return ret
+}
+
 func (mem *cpuMemory) Read32(address uint32) uint32 {
 	var ret uint32
 	for i := 0; i < 4; i++ {
@@ -51,6 +61,12 @@ func (mem *cpuMemory) Write(address uint32, value byte) {
 
 func (mem *cpuMemory) Write8(address uint32, value uint8) {
 	mem.Write(address, byte(value))
+}
+
+func (mem *cpuMemory) Write16(address uint32, value uint16) {
+	for i := 0; i < 2; i++ {
+		mem.Write(address+uint32(i), byte(value>>(uint(i)*8)))
+	}
 }
 
 func (mem *cpuMemory) Write32(address uint32, value uint32) {

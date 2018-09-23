@@ -80,6 +80,17 @@ func (modrm *ModRM) setRM8(cpu *CPU, value uint8) {
 	}
 }
 
+func (modrm *ModRM) setRM16(cpu *CPU, value uint16) {
+	mem := cpu.Memory
+	reg := &cpu.X86registers
+	if modrm.Mod == 3 {
+		reg.Set16ByIndex(modrm.Rm, value)
+	} else {
+		address := modrm.calcAddress(cpu)
+		mem.Write16(address, value)
+	}
+}
+
 func (modrm *ModRM) setRM32(cpu *CPU, value uint32) {
 	mem := cpu.Memory
 	reg := &cpu.X86registers
@@ -100,6 +111,19 @@ func (modrm *ModRM) getRM8(cpu *CPU) (result uint8) {
 	} else {
 		address := modrm.calcAddress(cpu)
 		result = mem.Read8(address)
+	}
+	return result
+}
+
+func (modrm *ModRM) getRM16(cpu *CPU) (result uint16) {
+	mem := cpu.Memory
+	reg := &cpu.X86registers
+
+	if modrm.Mod == 3 {
+		result = reg.Get16ByIndex(modrm.Rm)
+	} else {
+		address := modrm.calcAddress(cpu)
+		result = mem.Read16(address)
 	}
 	return result
 }
@@ -130,6 +154,11 @@ func (modrm *ModRM) setR32(cpu *CPU, value uint32) {
 func (modrm *ModRM) getR8(cpu *CPU) uint8 {
 	reg := &cpu.X86registers
 	return reg.Get8ByIndex(modrm.RegIndex)
+}
+
+func (modrm *ModRM) getR16(cpu *CPU) uint16 {
+	reg := &cpu.X86registers
+	return reg.Get16ByIndex(modrm.RegIndex)
 }
 
 func (modrm *ModRM) getR32(cpu *CPU) uint32 {

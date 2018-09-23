@@ -5,65 +5,65 @@ import (
 	"os"
 )
 
-func (cpu *CPU) createTable() {
-	cpu.InstTable[0x01] = cpu.addRM32R32
-	cpu.InstTable[0x05] = cpu.addEAXImm32
-	cpu.InstTable[0x3b] = cpu.cmpR32RM32
-	cpu.InstTable[0x3c] = cpu.cmpALImm8
-	cpu.InstTable[0x3d] = cpu.cmpEAXImm32
+func (cpu *CPU) createTable32() {
+	cpu.Instr32[0x01] = cpu.addRM32R32
+	cpu.Instr32[0x05] = cpu.addEAXImm32
+	cpu.Instr32[0x3b] = cpu.cmpR32RM32
+	cpu.Instr32[0x3c] = cpu.cmpALImm8
+	cpu.Instr32[0x3d] = cpu.cmpEAXImm32
 
 	for i := 0; i < 8; i++ {
-		cpu.InstTable[0x40+i] = cpu.incR32
+		cpu.Instr32[0x40+i] = cpu.incR32
 	}
 
 	for i := 0; i < 8; i++ {
-		cpu.InstTable[0x50+i] = cpu.pushReg
+		cpu.Instr32[0x50+i] = cpu.pushReg
 	}
 
 	for i := 0; i < 8; i++ {
-		cpu.InstTable[0x58+i] = cpu.popReg
+		cpu.Instr32[0x58+i] = cpu.popReg
 	}
 
-	cpu.InstTable[0x68] = cpu.pushImm32
-	cpu.InstTable[0x6a] = cpu.pushImm8
-	cpu.InstTable[0x70] = cpu.jo
-	cpu.InstTable[0x71] = cpu.jno
-	cpu.InstTable[0x72] = cpu.jc
-	cpu.InstTable[0x73] = cpu.jnc
-	cpu.InstTable[0x74] = cpu.jz
-	cpu.InstTable[0x75] = cpu.jnz
-	cpu.InstTable[0x78] = cpu.js
-	cpu.InstTable[0x79] = cpu.jns
-	cpu.InstTable[0x7c] = cpu.jl
-	cpu.InstTable[0x7e] = cpu.jle
-	cpu.InstTable[0x81] = cpu.code81
-	cpu.InstTable[0x83] = cpu.code83
-	cpu.InstTable[0x88] = cpu.movRM8R8
-	cpu.InstTable[0x89] = cpu.movRM32R32
-	cpu.InstTable[0x8a] = cpu.movR8RM8
-	cpu.InstTable[0x8b] = cpu.movR32RM32
-	cpu.InstTable[0x90] = cpu.nop
+	cpu.Instr32[0x68] = cpu.pushImm32
+	cpu.Instr32[0x6a] = cpu.pushImm8
+	cpu.Instr32[0x70] = cpu.jo
+	cpu.Instr32[0x71] = cpu.jno
+	cpu.Instr32[0x72] = cpu.jc
+	cpu.Instr32[0x73] = cpu.jnc
+	cpu.Instr32[0x74] = cpu.jz
+	cpu.Instr32[0x75] = cpu.jnz
+	cpu.Instr32[0x78] = cpu.js
+	cpu.Instr32[0x79] = cpu.jns
+	cpu.Instr32[0x7c] = cpu.jl
+	cpu.Instr32[0x7e] = cpu.jle
+	cpu.Instr32[0x81] = cpu.code81
+	cpu.Instr32[0x83] = cpu.code83
+	cpu.Instr32[0x88] = cpu.movRM8R8
+	cpu.Instr32[0x89] = cpu.movRM32R32
+	cpu.Instr32[0x8a] = cpu.movR8RM8
+	cpu.Instr32[0x8b] = cpu.movR32RM32
+	cpu.Instr32[0x90] = cpu.nop
 
 	for i := 0; i < 8; i++ {
-		cpu.InstTable[0xb0+i] = cpu.movR8Imm8
+		cpu.Instr32[0xb0+i] = cpu.movR8Imm8
 	}
 
 	for i := 0; i < 8; i++ {
-		cpu.InstTable[0xb8+i] = cpu.movR32Imm32
+		cpu.Instr32[0xb8+i] = cpu.movR32Imm32
 	}
 
-	cpu.InstTable[0xc3] = cpu.ret
-	cpu.InstTable[0xc7] = cpu.movRM32Imm32
-	cpu.InstTable[0xc9] = cpu.leave
+	cpu.Instr32[0xc3] = cpu.ret
+	cpu.Instr32[0xc7] = cpu.movRM32Imm32
+	cpu.Instr32[0xc9] = cpu.leave
 	/*
 		0xd8 - 0xdf: x87 FPU Instructions
 	*/
-	cpu.InstTable[0xe8] = cpu.callRelative
-	cpu.InstTable[0xe9] = cpu.nearJump
-	cpu.InstTable[0xeb] = cpu.shortJump
-	cpu.InstTable[0xec] = cpu.inALDX
-	cpu.InstTable[0xee] = cpu.outDXAL
-	cpu.InstTable[0xff] = cpu.codeFF
+	cpu.Instr32[0xe8] = cpu.callRelative
+	cpu.Instr32[0xe9] = cpu.nearJump
+	cpu.Instr32[0xeb] = cpu.shortJump
+	cpu.Instr32[0xec] = cpu.inALDX
+	cpu.Instr32[0xee] = cpu.outDXAL
+	cpu.Instr32[0xff] = cpu.codeFF
 }
 
 func (cpu *CPU) pushReg() {
