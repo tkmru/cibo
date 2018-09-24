@@ -146,6 +146,11 @@ func (modrm *ModRM) setR8(cpu *CPU, value uint8) {
 	reg.Set8ByIndex(modrm.RegIndex, value)
 }
 
+func (modrm *ModRM) setR16(cpu *CPU, value uint16) {
+	reg := &cpu.X86registers
+	reg.Set16ByIndex(modrm.RegIndex, value)
+}
+
 func (modrm *ModRM) setR32(cpu *CPU, value uint32) {
 	reg := &cpu.X86registers
 	reg.SetByIndex(modrm.RegIndex, value)

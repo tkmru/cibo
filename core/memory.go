@@ -13,6 +13,8 @@ type Memory interface {
 	Write32(address uint32, value uint32)
 	GetCode8(index int) uint8
 	GetSignCode8(index int) int8
+	GetCode16(index int) uint16
+	GetSignCode16(index int) int16
 	GetCode32(index int) uint32
 	GetSignCode32(index int) int32
 	Push(value uint32)
@@ -87,6 +89,19 @@ func (mem *cpuMemory) GetSignCode8(index int) int8 {
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 	return int8(mem.Read(reg.EIP + uint32(index)))
+}
+
+func (mem *cpuMemory) GetCode16(index int) uint16 {
+	var i uint
+	var ret uint16
+	for i = 0; i < 2; i++ {
+		ret |= uint16(mem.GetCode8(index+int(i))) << (i * 8)
+	}
+	return ret
+}
+
+func (mem *cpuMemory) GetSignCode16(index int) int16 {
+	return int16(mem.GetCode16(index))
 }
 
 func (mem *cpuMemory) GetCode32(index int) uint32 {

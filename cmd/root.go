@@ -13,6 +13,7 @@ const (
 )
 
 var debugFlag bool
+var beginAddress int
 var bitMode int
 
 // rootCmd represents the base command when called without any subcommands
@@ -25,7 +26,6 @@ var rootCmd = &cobra.Command{
 		var path string
 		path = args[0]
 
-		beginAddress := 0x7c00
 		emu := cibo.NewEmulatorWithLoadFile(bitMode, beginAddress, path, debugFlag)
 		cpu := emu.CPU
 		reg := &cpu.X86registers
@@ -46,6 +46,7 @@ func Execute(path []string) {
 
 func init() {
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.Flags().IntVarP(&beginAddress, "address", "a", 0x7c00, "begin address")
 	rootCmd.Flags().IntVarP(&bitMode, "bit", "b", 32, "bit mode")
 	rootCmd.PersistentFlags().BoolVarP(&debugFlag, "debug", "", false, "debug mode")
 }
