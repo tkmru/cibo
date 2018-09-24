@@ -74,7 +74,7 @@ func (cpu *CPU) pushReg() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0x50
-	mem.Push(reg.GetByIndex(regIndex))
+	mem.Push32(reg.GetByIndex(regIndex))
 	reg.EIP += 1
 }
 
@@ -82,7 +82,7 @@ func (cpu *CPU) pushImm32() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	value := mem.GetCode32(1)
-	mem.Push(value)
+	mem.Push32(value)
 	reg.EIP += 5
 }
 
@@ -90,7 +90,7 @@ func (cpu *CPU) pushImm8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	value := mem.GetCode8(1)
-	mem.Push(uint32(value))
+	mem.Push32(uint32(value))
 	reg.EIP += 2
 }
 
@@ -98,14 +98,14 @@ func (cpu *CPU) popReg() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0x58
-	reg.SetByIndex(regIndex, mem.Pop())
+	reg.SetByIndex(regIndex, mem.Pop32())
 	reg.EIP += 1
 }
 
 func (cpu *CPU) ret() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
-	reg.EIP = mem.Pop()
+	reg.EIP = mem.Pop32()
 }
 
 func (cpu *CPU) leave() {
@@ -113,7 +113,7 @@ func (cpu *CPU) leave() {
 	mem := cpu.Memory
 	ebp := reg.EBP
 	reg.ESP = ebp
-	reg.EBP = mem.Pop()
+	reg.EBP = mem.Pop32()
 	reg.EIP += 1
 }
 
@@ -121,7 +121,7 @@ func (cpu *CPU) callRelative() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	diff := mem.GetSignCode32(1)
-	mem.Push(reg.EIP + 5)
+	mem.Push32(reg.EIP + 5)
 	reg.EIP += uint32(diff + 5)
 }
 

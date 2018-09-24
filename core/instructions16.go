@@ -7,6 +7,12 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x03] = cpu.addR16RM16
 	cpu.Instr16[0x04] = cpu.addALImm8
 	cpu.Instr16[0x05] = cpu.addAXImm16
+	cpu.Instr16[0x06] = cpu.pushES
+	cpu.Instr16[0x07] = cpu.popES
+	cpu.Instr16[0x16] = cpu.pushSS
+	cpu.Instr16[0x17] = cpu.popSS
+	cpu.Instr16[0x1e] = cpu.pushDS
+	cpu.Instr16[0x1f] = cpu.popDS
 }
 
 func (cpu *CPU) addRM8R8() {
@@ -63,4 +69,46 @@ func (cpu *CPU) addAXImm16() {
 	value := mem.GetCode16(1)
 	reg.EAX += uint32(value)
 	reg.EIP += 3
+}
+
+func (cpu *CPU) pushES() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	mem.Push16(reg.ES)
+	reg.EIP += 1
+}
+
+func (cpu *CPU) popES() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	reg.ES = mem.Pop16()
+	reg.EIP += 1
+}
+
+func (cpu *CPU) pushSS() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	mem.Push16(reg.SS)
+	reg.EIP += 1
+}
+
+func (cpu *CPU) popSS() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	reg.SS = mem.Pop16()
+	reg.EIP += 1
+}
+
+func (cpu *CPU) pushDS() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	mem.Push16(reg.DS)
+	reg.EIP += 1
+}
+
+func (cpu *CPU) popDS() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	reg.DS = mem.Pop16()
+	reg.EIP += 1
 }
