@@ -1,5 +1,7 @@
 package cibo
 
+import "log"
+
 func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x00] = cpu.addRM8R8
 	cpu.Instr16[0x01] = cpu.addRM16R16
@@ -19,6 +21,7 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x17] = cpu.popSS
 	cpu.Instr16[0x1e] = cpu.pushDS
 	cpu.Instr16[0x1f] = cpu.popDS
+	cpu.Instr16[0x66] = cpu.overrideOperandTo32
 }
 
 func (cpu *CPU) addRM8R8() {
@@ -173,4 +176,15 @@ func (cpu *CPU) popDS() {
 	mem := cpu.Memory
 	reg.DS = mem.Pop16()
 	reg.EIP += 1
+}
+
+func (cpu *CPU) overrideOperandTo32() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	mem := cpu.Memory
+	code := uint8(mem.GetCode8(0))
+	if cpu.Instr32[code] == nil {
+		log.Fatalf("Not Implemented: 0x%x\n", code)
+	}
+	cpu.Instr32[code]()
 }
