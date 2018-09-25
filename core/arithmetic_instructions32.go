@@ -33,6 +33,34 @@ func (cpu *CPU) addEAXImm32() {
 	reg.EIP += 5
 }
 
+func (cpu *CPU) orRM32R32() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r32 := modrm.getR32(cpu)
+	rm32 := modrm.getRM32(cpu)
+	modrm.setRM32(cpu, (rm32 | r32))
+}
+
+func (cpu *CPU) orR32RM32() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r32 := modrm.getR32(cpu)
+	rm32 := modrm.getRM32(cpu)
+	modrm.setR32(cpu, (rm32 | r32))
+}
+
+func (cpu *CPU) orEAXImm32() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode32(1)
+	reg.EAX = (reg.EAX | uint32(value))
+	reg.EIP += 5
+}
+
 func (cpu *CPU) cmpR32RM32() {
 	reg := &cpu.X86registers
 	reg.EIP += 1
