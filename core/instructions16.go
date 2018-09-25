@@ -9,6 +9,12 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x05] = cpu.addAXImm16
 	cpu.Instr16[0x06] = cpu.pushES
 	cpu.Instr16[0x07] = cpu.popES
+	cpu.Instr16[0x08] = cpu.orRM8R8
+	cpu.Instr16[0x09] = cpu.orRM16R16
+	cpu.Instr16[0x0a] = cpu.orR8RM8
+	cpu.Instr16[0x0b] = cpu.orR16RM16
+	cpu.Instr16[0x0c] = cpu.orALImm8
+	cpu.Instr16[0x0d] = cpu.orAXImm16
 	cpu.Instr16[0x16] = cpu.pushSS
 	cpu.Instr16[0x17] = cpu.popSS
 	cpu.Instr16[0x1e] = cpu.pushDS
@@ -68,6 +74,62 @@ func (cpu *CPU) addAXImm16() {
 	mem := cpu.Memory
 	value := mem.GetCode16(1)
 	reg.EAX += uint32(value)
+	reg.EIP += 3
+}
+
+func (cpu *CPU) orRM8R8() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r8 := modrm.getR8(cpu)
+	rm8 := modrm.getRM8(cpu)
+	modrm.setRM8(cpu, (rm8 | r8))
+}
+
+func (cpu *CPU) orRM16R16() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r16 := modrm.getR16(cpu)
+	rm16 := modrm.getRM16(cpu)
+	modrm.setRM16(cpu, (rm16 | r16))
+}
+
+func (cpu *CPU) orR8RM8() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r8 := modrm.getR8(cpu)
+	rm8 := modrm.getRM8(cpu)
+	modrm.setR8(cpu, (rm8 | r8))
+}
+
+func (cpu *CPU) orR16RM16() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r16 := modrm.getR16(cpu)
+	rm16 := modrm.getRM16(cpu)
+	modrm.setR16(cpu, (rm16 | r16))
+}
+
+func (cpu *CPU) orALImm8() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode8(1)
+	reg.EAX = reg.EAX | uint32(value)
+	reg.EIP += 2
+}
+
+func (cpu *CPU) orAXImm16() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode16(1)
+	reg.EAX = reg.EAX | uint32(value)
 	reg.EIP += 3
 }
 
