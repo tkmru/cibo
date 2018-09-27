@@ -33,11 +33,11 @@ func (cpu *CPU) createTable32() {
 	}
 
 	for i := 0; i < 8; i++ {
-		cpu.Instr32[0x50+i] = cpu.pushReg
+		cpu.Instr32[0x50+i] = cpu.push32Reg
 	}
 
 	for i := 0; i < 8; i++ {
-		cpu.Instr32[0x58+i] = cpu.popReg
+		cpu.Instr32[0x58+i] = cpu.pop32Reg
 	}
 
 	cpu.Instr32[0x68] = cpu.push32Imm32
@@ -82,7 +82,7 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0xff] = cpu.codeFF
 }
 
-func (cpu *CPU) pushReg() {
+func (cpu *CPU) push32Reg() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0x50
@@ -106,7 +106,7 @@ func (cpu *CPU) push32Imm8() {
 	reg.EIP += 2
 }
 
-func (cpu *CPU) popReg() {
+func (cpu *CPU) pop32Reg() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0x58

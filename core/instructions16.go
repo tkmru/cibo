@@ -21,6 +21,15 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x17] = cpu.pop16SS
 	cpu.Instr16[0x1e] = cpu.push16DS
 	cpu.Instr16[0x1f] = cpu.pop16DS
+
+	for i := 0; i < 8; i++ {
+		cpu.Instr16[0x50+i] = cpu.push16Reg
+	}
+
+	for i := 0; i < 8; i++ {
+		cpu.Instr16[0x58+i] = cpu.pop16Reg
+	}
+
 	cpu.Instr16[0x66] = cpu.overrideOperandTo32
 	cpu.Instr16[0x68] = cpu.push16Imm16
 	cpu.Instr16[0x6a] = cpu.push16Imm8
@@ -194,6 +203,22 @@ func (cpu *CPU) push16Imm8() {
 	value := mem.GetCode8(1)
 	mem.Push16(uint16(value))
 	reg.EIP += 2
+}
+
+func (cpu *CPU) push16Reg() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	regIndex := mem.GetCode8(0) - 0x50
+	mem.Push16(reg.Get16ByIndex(regIndex))
+	reg.EIP += 1
+}
+
+func (cpu *CPU) pop16Reg() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	regIndex := mem.GetCode8(0) - 0x58
+	reg.Set16ByIndex(regIndex, mem.Pop16())
+	reg.EIP += 1
 }
 
 func (cpu *CPU) overrideOperandTo32() {
