@@ -9,18 +9,18 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x03] = cpu.addR16RM16
 	cpu.Instr16[0x04] = cpu.addALImm8
 	cpu.Instr16[0x05] = cpu.addAXImm16
-	cpu.Instr16[0x06] = cpu.pushES
-	cpu.Instr16[0x07] = cpu.popES
+	cpu.Instr16[0x06] = cpu.pushES16
+	cpu.Instr16[0x07] = cpu.popES16
 	cpu.Instr16[0x08] = cpu.orRM8R8
 	cpu.Instr16[0x09] = cpu.orRM16R16
 	cpu.Instr16[0x0a] = cpu.orR8RM8
 	cpu.Instr16[0x0b] = cpu.orR16RM16
 	cpu.Instr16[0x0c] = cpu.orALImm8
 	cpu.Instr16[0x0d] = cpu.orAXImm16
-	cpu.Instr16[0x16] = cpu.pushSS
-	cpu.Instr16[0x17] = cpu.popSS
-	cpu.Instr16[0x1e] = cpu.pushDS
-	cpu.Instr16[0x1f] = cpu.popDS
+	cpu.Instr16[0x16] = cpu.pushSS16
+	cpu.Instr16[0x17] = cpu.popSS16
+	cpu.Instr16[0x1e] = cpu.pushDS16
+	cpu.Instr16[0x1f] = cpu.popDS16
 	cpu.Instr16[0x66] = cpu.overrideOperandTo32
 }
 
@@ -136,42 +136,42 @@ func (cpu *CPU) orAXImm16() {
 	reg.EIP += 3
 }
 
-func (cpu *CPU) pushES() {
+func (cpu *CPU) pushES16() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	mem.Push16(reg.ES)
 	reg.EIP += 1
 }
 
-func (cpu *CPU) popES() {
+func (cpu *CPU) popES16() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	reg.ES = mem.Pop16()
 	reg.EIP += 1
 }
 
-func (cpu *CPU) pushSS() {
+func (cpu *CPU) pushSS16() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	mem.Push16(reg.SS)
 	reg.EIP += 1
 }
 
-func (cpu *CPU) popSS() {
+func (cpu *CPU) popSS16() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	reg.SS = mem.Pop16()
 	reg.EIP += 1
 }
 
-func (cpu *CPU) pushDS() {
+func (cpu *CPU) pushDS16() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	mem.Push16(reg.DS)
 	reg.EIP += 1
 }
 
-func (cpu *CPU) popDS() {
+func (cpu *CPU) popDS16() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	reg.DS = mem.Pop16()
