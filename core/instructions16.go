@@ -9,19 +9,21 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x03] = cpu.addR16RM16
 	cpu.Instr16[0x04] = cpu.addALImm8
 	cpu.Instr16[0x05] = cpu.addAXImm16
-	cpu.Instr16[0x06] = cpu.pushES16
-	cpu.Instr16[0x07] = cpu.popES16
+	cpu.Instr16[0x06] = cpu.push16ES
+	cpu.Instr16[0x07] = cpu.pop16ES
 	cpu.Instr16[0x08] = cpu.orRM8R8
 	cpu.Instr16[0x09] = cpu.orRM16R16
 	cpu.Instr16[0x0a] = cpu.orR8RM8
 	cpu.Instr16[0x0b] = cpu.orR16RM16
 	cpu.Instr16[0x0c] = cpu.orALImm8
 	cpu.Instr16[0x0d] = cpu.orAXImm16
-	cpu.Instr16[0x16] = cpu.pushSS16
-	cpu.Instr16[0x17] = cpu.popSS16
-	cpu.Instr16[0x1e] = cpu.pushDS16
-	cpu.Instr16[0x1f] = cpu.popDS16
+	cpu.Instr16[0x16] = cpu.push16SS
+	cpu.Instr16[0x17] = cpu.pop16SS
+	cpu.Instr16[0x1e] = cpu.push16DS
+	cpu.Instr16[0x1f] = cpu.pop16DS
 	cpu.Instr16[0x66] = cpu.overrideOperandTo32
+	cpu.Instr16[0x68] = cpu.push16Imm16
+	cpu.Instr16[0x6a] = cpu.push16Imm8
 }
 
 func (cpu *CPU) addRM8R8() {
@@ -136,46 +138,62 @@ func (cpu *CPU) orAXImm16() {
 	reg.EIP += 3
 }
 
-func (cpu *CPU) pushES16() {
+func (cpu *CPU) push16ES() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	mem.Push16(reg.ES)
 	reg.EIP += 1
 }
 
-func (cpu *CPU) popES16() {
+func (cpu *CPU) pop16ES() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	reg.ES = mem.Pop16()
 	reg.EIP += 1
 }
 
-func (cpu *CPU) pushSS16() {
+func (cpu *CPU) push16SS() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	mem.Push16(reg.SS)
 	reg.EIP += 1
 }
 
-func (cpu *CPU) popSS16() {
+func (cpu *CPU) pop16SS() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	reg.SS = mem.Pop16()
 	reg.EIP += 1
 }
 
-func (cpu *CPU) pushDS16() {
+func (cpu *CPU) push16DS() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	mem.Push16(reg.DS)
 	reg.EIP += 1
 }
 
-func (cpu *CPU) popDS16() {
+func (cpu *CPU) pop16DS() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	reg.DS = mem.Pop16()
 	reg.EIP += 1
+}
+
+func (cpu *CPU) push16Imm16() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode16(1)
+	mem.Push16(value)
+	reg.EIP += 3
+}
+
+func (cpu *CPU) push16Imm8() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode8(1)
+	mem.Push16(uint16(value))
+	reg.EIP += 2
 }
 
 func (cpu *CPU) overrideOperandTo32() {

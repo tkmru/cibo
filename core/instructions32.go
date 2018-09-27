@@ -12,18 +12,18 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0x03] = cpu.addR32RM32
 	cpu.Instr32[0x04] = cpu.addALImm8
 	cpu.Instr32[0x05] = cpu.addEAXImm32
-	cpu.Instr32[0x06] = cpu.pushES32
-	cpu.Instr32[0x07] = cpu.popES32
+	cpu.Instr32[0x06] = cpu.push32ES
+	cpu.Instr32[0x07] = cpu.pop32ES
 	cpu.Instr32[0x08] = cpu.orRM8R8
 	cpu.Instr32[0x09] = cpu.orRM32R32
 	cpu.Instr32[0x0a] = cpu.orR8RM8
 	cpu.Instr32[0x0b] = cpu.orR32RM32
 	cpu.Instr32[0x0c] = cpu.orALImm8
 	cpu.Instr32[0x0d] = cpu.orEAXImm32
-	cpu.Instr32[0x16] = cpu.pushSS32
-	cpu.Instr32[0x17] = cpu.popSS32
-	cpu.Instr32[0x1e] = cpu.pushDS32
-	cpu.Instr32[0x1f] = cpu.popDS32
+	cpu.Instr32[0x16] = cpu.push32SS
+	cpu.Instr32[0x17] = cpu.pop32SS
+	cpu.Instr32[0x1e] = cpu.push32DS
+	cpu.Instr32[0x1f] = cpu.pop32DS
 	cpu.Instr32[0x3b] = cpu.cmpR32RM32
 	cpu.Instr32[0x3c] = cpu.cmpALImm8
 	cpu.Instr32[0x3d] = cpu.cmpEAXImm32
@@ -40,8 +40,8 @@ func (cpu *CPU) createTable32() {
 		cpu.Instr32[0x58+i] = cpu.popReg
 	}
 
-	cpu.Instr32[0x68] = cpu.pushImm32
-	cpu.Instr32[0x6a] = cpu.pushImm8
+	cpu.Instr32[0x68] = cpu.push32Imm32
+	cpu.Instr32[0x6a] = cpu.push32Imm8
 	cpu.Instr32[0x70] = cpu.jo
 	cpu.Instr32[0x71] = cpu.jno
 	cpu.Instr32[0x72] = cpu.jc
@@ -90,7 +90,7 @@ func (cpu *CPU) pushReg() {
 	reg.EIP += 1
 }
 
-func (cpu *CPU) pushImm32() {
+func (cpu *CPU) push32Imm32() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	value := mem.GetCode32(1)
@@ -98,7 +98,7 @@ func (cpu *CPU) pushImm32() {
 	reg.EIP += 5
 }
 
-func (cpu *CPU) pushImm8() {
+func (cpu *CPU) push32Imm8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	value := mem.GetCode8(1)
@@ -114,42 +114,42 @@ func (cpu *CPU) popReg() {
 	reg.EIP += 1
 }
 
-func (cpu *CPU) pushES32() {
+func (cpu *CPU) push32ES() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	mem.Push32(uint32(reg.ES))
 	reg.EIP += 1
 }
 
-func (cpu *CPU) popES32() {
+func (cpu *CPU) pop32ES() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	reg.ES = uint16(mem.Pop32())
 	reg.EIP += 1
 }
 
-func (cpu *CPU) pushSS32() {
+func (cpu *CPU) push32SS() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	mem.Push32(uint32(reg.SS))
 	reg.EIP += 1
 }
 
-func (cpu *CPU) popSS32() {
+func (cpu *CPU) pop32SS() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	reg.SS = uint16(mem.Pop32())
 	reg.EIP += 1
 }
 
-func (cpu *CPU) pushDS32() {
+func (cpu *CPU) push32DS() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	mem.Push32(uint32(reg.DS))
 	reg.EIP += 1
 }
 
-func (cpu *CPU) popDS32() {
+func (cpu *CPU) pop32DS() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	reg.DS = uint16(mem.Pop32())
