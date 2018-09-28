@@ -2,6 +2,7 @@ package cibo
 
 import (
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -42,6 +43,7 @@ func (cpu *CPU) createTable32() {
 		cpu.Instr32[0x58+i] = cpu.pop32Reg
 	}
 
+	cpu.Instr32[0x66] = cpu.overrideOperandTo16
 	cpu.Instr32[0x68] = cpu.push32Imm32
 	cpu.Instr32[0x6a] = cpu.push32Imm8
 	cpu.Instr32[0x70] = cpu.jo
@@ -174,6 +176,17 @@ func (cpu *CPU) pop32DS() {
 	mem := cpu.Memory
 	reg.DS = uint16(mem.Pop32())
 	reg.EIP += 1
+}
+
+func (cpu *CPU) overrideOperandTo16() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	mem := cpu.Memory
+	code := uint8(mem.GetCode8(0))
+	if cpu.Instr16[code] == nil {
+		log.Fatalf("Not Implemented: 0x%x\n", code)
+	}
+	cpu.Instr16[code]()
 }
 
 func (cpu *CPU) ret() {
