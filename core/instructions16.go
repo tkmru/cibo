@@ -17,6 +17,8 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x0b] = cpu.orR16RM16
 	cpu.Instr16[0x0c] = cpu.orALImm8
 	cpu.Instr16[0x0d] = cpu.orAXImm16
+	cpu.Instr16[0x0e] = cpu.push16CS
+	cpu.Instr16[0x0f] = cpu.code0F16
 	cpu.Instr16[0x16] = cpu.push16SS
 	cpu.Instr16[0x17] = cpu.pop16SS
 	cpu.Instr16[0x1e] = cpu.push16DS
@@ -159,6 +161,24 @@ func (cpu *CPU) pop16ES() {
 	mem := cpu.Memory
 	reg.ES = mem.Pop16()
 	reg.EIP += 1
+}
+
+func (cpu *CPU) push16CS() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	mem.Push16(reg.CS)
+	reg.EIP += 1
+}
+
+func (cpu *CPU) pop16CS() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	reg.CS = mem.Pop16()
+	reg.EIP += 1
+}
+
+func (cpu *CPU) code0F16() {
+	cpu.pop16CS()
 }
 
 func (cpu *CPU) push16SS() {

@@ -20,6 +20,8 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0x0b] = cpu.orR32RM32
 	cpu.Instr32[0x0c] = cpu.orALImm8
 	cpu.Instr32[0x0d] = cpu.orEAXImm32
+	cpu.Instr32[0x0e] = cpu.push32CS
+	cpu.Instr32[0x0f] = cpu.code0F32
 	cpu.Instr32[0x16] = cpu.push32SS
 	cpu.Instr32[0x17] = cpu.pop32SS
 	cpu.Instr32[0x1e] = cpu.push32DS
@@ -126,6 +128,24 @@ func (cpu *CPU) pop32ES() {
 	mem := cpu.Memory
 	reg.ES = uint16(mem.Pop32())
 	reg.EIP += 1
+}
+
+func (cpu *CPU) push32CS() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	mem.Push32(uint32(reg.CS))
+	reg.EIP += 1
+}
+
+func (cpu *CPU) pop32CS() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	reg.CS = uint16(mem.Pop32())
+	reg.EIP += 1
+}
+
+func (cpu *CPU) code0F32() {
+	cpu.pop32CS()
 }
 
 func (cpu *CPU) push32SS() {
