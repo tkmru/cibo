@@ -110,35 +110,6 @@ func (cpu *CPU) subRM32Imm32(modrm *ModRM) {
 	modrm.setRM32(cpu, uint32(rm32-imm32))
 }
 
-func (cpu *CPU) code81() {
-	reg := &cpu.X86registers
-	reg.EIP += 1
-	var modrm ModRM
-	modrm.parse(cpu)
-
-	switch modrm.Opcode {
-	case 0:
-		//cpu.addRM32Imm32(&modrm)
-	case 1:
-		//cpu.orRM32Imm32(&modrm)
-	case 2:
-		//cpu.adcRM32Imm32(&modrm)
-	case 3:
-		//cpu.sbbRM32Imm32(&modrm)
-	case 4:
-		//cpu.andRM32Imm32(&modrm)
-	case 5:
-		cpu.subRM32Imm32(&modrm)
-	case 6:
-		//cpu.xorRM32Imm32(&modrm)
-	case 7:
-		//cpu.cmpRM32Imm32(&modrm)
-	default:
-		fmt.Printf("not implemented: 0x81 /%d\n", modrm.Opcode)
-		os.Exit(1)
-	}
-}
-
 func (cpu *CPU) subRM32Imm8(modrm *ModRM) {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
@@ -158,35 +129,6 @@ func (cpu *CPU) cmpRM32Imm8(modrm *ModRM) {
 	reg.EIP += 1
 	result := uint64(rm32) - uint64(imm8)
 	reg.updateEflagsSub(rm32, uint32(imm8), result)
-}
-
-func (cpu *CPU) code83() {
-	reg := &cpu.X86registers
-	reg.EIP += 1
-	var modrm ModRM
-	modrm.parse(cpu)
-
-	switch modrm.Opcode {
-	case 0:
-		//cpu.addRM32Imm8(&modrm)
-	case 1:
-		//cpu.orRM32Imm8(&modrm)
-	case 2:
-		//cpu.adcRM32Imm8(&modrm)
-	case 3:
-		//cpu.sbbRM32Imm8(&modrm)
-	case 4:
-		//cpu.andRM32Imm8(&modrm)
-	case 5:
-		cpu.subRM32Imm8(&modrm)
-	case 6:
-		//cpu.xorRM32Imm8(&modrm)
-	case 7:
-		cpu.cmpRM32Imm8(&modrm)
-	default:
-		fmt.Printf("not implemented: 0x83 /%d\n", modrm.Opcode)
-		os.Exit(1)
-	}
 }
 
 func (cpu *CPU) incRM32(modrm *ModRM) {

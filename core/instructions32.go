@@ -22,7 +22,7 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0x0c] = cpu.orALImm8
 	cpu.Instr32[0x0d] = cpu.orEAXImm32
 	cpu.Instr32[0x0e] = cpu.push32CS
-	cpu.Instr32[0x0f] = cpu.code0F32
+	cpu.Instr32[0x0f] = cpu.code0Fb32
 	cpu.Instr32[0x16] = cpu.push32SS
 	cpu.Instr32[0x17] = cpu.pop32SS
 	cpu.Instr32[0x1e] = cpu.push32DS
@@ -46,18 +46,18 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0x66] = cpu.overrideOperandTo16
 	cpu.Instr32[0x68] = cpu.push32Imm32
 	cpu.Instr32[0x6a] = cpu.push32Imm8
-	cpu.Instr32[0x70] = cpu.jo
-	cpu.Instr32[0x71] = cpu.jno
-	cpu.Instr32[0x72] = cpu.jc
-	cpu.Instr32[0x73] = cpu.jnc
-	cpu.Instr32[0x74] = cpu.jz
-	cpu.Instr32[0x75] = cpu.jnz
-	cpu.Instr32[0x78] = cpu.js
-	cpu.Instr32[0x79] = cpu.jns
-	cpu.Instr32[0x7c] = cpu.jl
-	cpu.Instr32[0x7e] = cpu.jle
-	cpu.Instr32[0x81] = cpu.code81
-	cpu.Instr32[0x83] = cpu.code83
+	cpu.Instr32[0x70] = cpu.joRel8
+	cpu.Instr32[0x71] = cpu.jnoRel8
+	cpu.Instr32[0x72] = cpu.jcRel8
+	cpu.Instr32[0x73] = cpu.jncRel8
+	cpu.Instr32[0x74] = cpu.jzRel8
+	cpu.Instr32[0x75] = cpu.jnzRel8
+	cpu.Instr32[0x78] = cpu.jsRel8
+	cpu.Instr32[0x79] = cpu.jnsRel8
+	cpu.Instr32[0x7c] = cpu.jlRel8
+	cpu.Instr32[0x7e] = cpu.jleRel8
+	cpu.Instr32[0x81] = cpu.code81b32
+	cpu.Instr32[0x83] = cpu.code83b32
 	cpu.Instr32[0x88] = cpu.movRM8R8
 	cpu.Instr32[0x89] = cpu.movRM32R32
 	cpu.Instr32[0x8a] = cpu.movR8RM8
@@ -146,7 +146,7 @@ func (cpu *CPU) pop32CS() {
 	reg.EIP += 1
 }
 
-func (cpu *CPU) code0F32() {
+func (cpu *CPU) code0Fb32() {
 	cpu.pop32CS()
 }
 
@@ -246,5 +246,63 @@ func ioOut8(address uint16, ascii uint8) {
 	case 0x03f8:
 		fmt.Println(string(ascii))
 		break
+	}
+}
+
+func (cpu *CPU) code81b32() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+
+	switch modrm.Opcode {
+	case 0:
+		//cpu.addRM32Imm32(&modrm)
+	case 1:
+		//cpu.orRM32Imm32(&modrm)
+	case 2:
+		//cpu.adcRM32Imm32(&modrm)
+	case 3:
+		//cpu.sbbRM32Imm32(&modrm)
+	case 4:
+		//cpu.andRM32Imm32(&modrm)
+	case 5:
+		cpu.subRM32Imm32(&modrm)
+	case 6:
+		//cpu.xorRM32Imm32(&modrm)
+	case 7:
+		//cpu.cmpRM32Imm32(&modrm)
+	default:
+		fmt.Printf("not implemented: 0x81 /%d\n", modrm.Opcode)
+		os.Exit(1)
+	}
+}
+
+func (cpu *CPU) code83b32() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+
+	switch modrm.Opcode {
+	case 0:
+		//cpu.addRM32Imm8(&modrm)
+	case 1:
+		//cpu.orRM32Imm8(&modrm)
+	case 2:
+		//cpu.adcRM32Imm8(&modrm)
+	case 3:
+		//cpu.sbbRM32Imm8(&modrm)
+	case 4:
+		//cpu.andRM32Imm8(&modrm)
+	case 5:
+		cpu.subRM32Imm8(&modrm)
+	case 6:
+		//cpu.xorRM32Imm8(&modrm)
+	case 7:
+		cpu.cmpRM32Imm8(&modrm)
+	default:
+		fmt.Printf("not implemented: 0x83 /%d\n", modrm.Opcode)
+		os.Exit(1)
 	}
 }

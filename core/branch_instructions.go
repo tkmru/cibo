@@ -1,6 +1,6 @@
 package cibo
 
-func (cpu *CPU) jo() {
+func (cpu *CPU) joRel8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	var diff uint32 = 2
@@ -10,7 +10,7 @@ func (cpu *CPU) jo() {
 	reg.EIP += diff
 }
 
-func (cpu *CPU) jno() {
+func (cpu *CPU) jnoRel8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	var diff uint32 = 2
@@ -20,7 +20,7 @@ func (cpu *CPU) jno() {
 	reg.EIP += diff
 }
 
-func (cpu *CPU) jc() {
+func (cpu *CPU) jcRel8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	var diff uint32 = 2
@@ -30,7 +30,7 @@ func (cpu *CPU) jc() {
 	reg.EIP += diff
 }
 
-func (cpu *CPU) jnc() {
+func (cpu *CPU) jncRel8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	var diff uint32 = 2
@@ -40,7 +40,7 @@ func (cpu *CPU) jnc() {
 	reg.EIP += diff
 }
 
-func (cpu *CPU) jz() {
+func (cpu *CPU) jzRel8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	var diff uint32 = 2
@@ -50,7 +50,7 @@ func (cpu *CPU) jz() {
 	reg.EIP += diff
 }
 
-func (cpu *CPU) jnz() {
+func (cpu *CPU) jnzRel8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	var diff uint32 = 2
@@ -60,7 +60,7 @@ func (cpu *CPU) jnz() {
 	reg.EIP += diff
 }
 
-func (cpu *CPU) js() {
+func (cpu *CPU) jsRel8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	var diff uint32 = 2
@@ -70,7 +70,7 @@ func (cpu *CPU) js() {
 	reg.EIP += diff
 }
 
-func (cpu *CPU) jns() {
+func (cpu *CPU) jnsRel8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	var diff uint32 = 2
@@ -80,7 +80,7 @@ func (cpu *CPU) jns() {
 	reg.EIP += diff
 }
 
-func (cpu *CPU) jl() {
+func (cpu *CPU) jlRel8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	var diff uint32 = 2
@@ -90,8 +90,7 @@ func (cpu *CPU) jl() {
 	reg.EIP += diff
 }
 
-// jump if less or equal
-func (cpu *CPU) jle() {
+func (cpu *CPU) jleRel8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	var diff uint32 = 2

@@ -35,6 +35,17 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x66] = cpu.overrideOperandTo32
 	cpu.Instr16[0x68] = cpu.push16Imm16
 	cpu.Instr16[0x6a] = cpu.push16Imm8
+
+	cpu.Instr16[0x70] = cpu.joRel8
+	cpu.Instr16[0x71] = cpu.jnoRel8
+	cpu.Instr16[0x72] = cpu.jcRel8
+	cpu.Instr16[0x73] = cpu.jncRel8
+	cpu.Instr16[0x74] = cpu.jzRel8
+	cpu.Instr16[0x75] = cpu.jnzRel8
+	cpu.Instr16[0x78] = cpu.jsRel8
+	cpu.Instr16[0x79] = cpu.jnsRel8
+	cpu.Instr16[0x7c] = cpu.jlRel8
+	cpu.Instr16[0x7e] = cpu.jleRel8
 }
 
 func (cpu *CPU) addRM8R8() {
