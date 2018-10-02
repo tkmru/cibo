@@ -9,7 +9,7 @@ import (
 	"github.com/tkmru/cibo/core"
 )
 
-func TestBranchWithZF32(t *testing.T) {
+func TestBranchRel8WithZF32(t *testing.T) {
 	beginAddress := 0x7c00
 	bitMode := 32
 	emu := cibo.NewEmulator(bitMode, beginAddress, 29, true)

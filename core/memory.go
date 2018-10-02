@@ -11,12 +11,12 @@ type Memory interface {
 	Write8(address uint32, value uint8)
 	Write16(address uint32, value uint16)
 	Write32(address uint32, value uint32)
-	GetCode8(index int) uint8
-	GetSignCode8(index int) int8
-	GetCode16(index int) uint16
-	GetSignCode16(index int) int16
-	GetCode32(index int) uint32
-	GetSignCode32(index int) int32
+	GetCode8(offset int) uint8
+	GetSignCode8(offset int) int8
+	GetCode16(offset int) uint16
+	GetSignCode16(offset int) int16
+	GetCode32(offset int) uint32
+	GetSignCode32(offset int) int32
 	Push16(value uint16)
 	Push32(value uint32)
 	Pop16() uint16
@@ -79,44 +79,44 @@ func (mem *cpuMemory) Write32(address uint32, value uint32) {
 	}
 }
 
-func (mem *cpuMemory) GetCode8(index int) uint8 {
+func (mem *cpuMemory) GetCode8(offset int) uint8 {
 	emu := mem.emulator
 	cpu := emu.CPU
 	reg := &cpu.X86registers
-	return uint8(mem.Read(reg.EIP + uint32(index)))
+	return uint8(mem.Read(reg.EIP + uint32(offset)))
 }
 
-func (mem *cpuMemory) GetSignCode8(index int) int8 {
+func (mem *cpuMemory) GetSignCode8(offset int) int8 {
 	emu := mem.emulator
 	cpu := emu.CPU
 	reg := &cpu.X86registers
-	return int8(mem.Read(reg.EIP + uint32(index)))
+	return int8(mem.Read(reg.EIP + uint32(offset)))
 }
 
-func (mem *cpuMemory) GetCode16(index int) uint16 {
+func (mem *cpuMemory) GetCode16(offset int) uint16 {
 	var i uint
 	var ret uint16
 	for i = 0; i < 2; i++ {
-		ret |= uint16(mem.GetCode8(index+int(i))) << (i * 8)
+		ret |= uint16(mem.GetCode8(offset+int(i))) << (i * 8)
 	}
 	return ret
 }
 
-func (mem *cpuMemory) GetSignCode16(index int) int16 {
-	return int16(mem.GetCode16(index))
+func (mem *cpuMemory) GetSignCode16(offset int) int16 {
+	return int16(mem.GetCode16(offset))
 }
 
-func (mem *cpuMemory) GetCode32(index int) uint32 {
+func (mem *cpuMemory) GetCode32(offset int) uint32 {
 	var i uint
 	var ret uint32
 	for i = 0; i < 4; i++ {
-		ret |= uint32(mem.GetCode8(index+int(i))) << (i * 8)
+		ret |= uint32(mem.GetCode8(offset+int(i))) << (i * 8)
 	}
 	return ret
 }
 
-func (mem *cpuMemory) GetSignCode32(index int) int32 {
-	return int32(mem.GetCode32(index))
+func (mem *cpuMemory) GetSignCode32(offset int) int32 {
+	return int32(mem.GetCode32(offset))
 }
 
 func (mem *cpuMemory) Push16(value uint16) {
