@@ -148,7 +148,37 @@ func (r *X86registers) Set8ByIndex(index uint8, value uint8) {
 	targetRegister.Set(reflect.ValueOf(value32))
 }
 
-func (r *X86registers) updateEflagsSub(v1 uint32, v2 uint32, result uint64) {
+func (r *X86registers) updateEflagsSub16(v1 uint16, v2 uint16, result uint32) {
+	var sign1 int = int(v1 >> 15)
+	var sign2 int = int(v2 >> 15)
+	var signr int = int((result >> 15) & 1)
+
+	if (result >> 32) == 1 {
+		r.SetCF()
+	} else {
+		r.RemoveCF()
+	}
+
+	if result == 0 {
+		r.SetZF()
+	} else {
+		r.RemoveZF()
+	}
+
+	if signr == 1 {
+		r.SetSF()
+	} else {
+		r.RemoveSF()
+	}
+
+	if (sign1^sign2 == 1) && (sign1^signr == 1) {
+		r.SetOF()
+	} else {
+		r.RemoveOF()
+	}
+}
+
+func (r *X86registers) updateEflagsSub32(v1 uint32, v2 uint32, result uint64) {
 	var sign1 int = int(v1 >> 31)
 	var sign2 int = int(v2 >> 31)
 	var signr int = int((result >> 31) & 1)

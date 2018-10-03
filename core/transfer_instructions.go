@@ -45,6 +45,15 @@ func (cpu *CPU) movR8Imm8() {
 	reg.EIP += 2
 }
 
+func (cpu *CPU) movR16Imm16() {
+	mem := cpu.Memory
+	regIndex := mem.GetCode8(0) - 0xb8
+	value := mem.GetCode16(1)
+	reg := &cpu.X86registers
+	reg.Set16ByIndex(regIndex, value)
+	reg.EIP += 3
+}
+
 func (cpu *CPU) movR32Imm32() {
 	mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0xb8

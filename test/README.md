@@ -1,5 +1,5 @@
 # How To Run
 
 ```
-$ go test
+$ go test .
 ```

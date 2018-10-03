@@ -60,7 +60,6 @@ func (cpu *CPU) jnzRel8() {
 	reg.EIP += diff
 }
 
-
 func (cpu *CPU) jnzRel16() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
@@ -80,7 +79,6 @@ func (cpu *CPU) jnzRel32() {
 	}
 	reg.EIP += diff
 }
-
 
 func (cpu *CPU) jsRel8() {
 	reg := &cpu.X86registers
@@ -122,14 +120,21 @@ func (cpu *CPU) jleRel8() {
 	reg.EIP += diff
 }
 
-func (cpu *CPU) nearJump() {
+func (cpu *CPU) jmpRel32() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
-	diff := mem.GetSignCode32(1)
+	diff := mem.GetCode32(1)
 	reg.EIP += uint32(diff + 5)
 }
 
-func (cpu *CPU) shortJump() {
+func (cpu *CPU) jmpRel16() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	diff := mem.GetCode16(1)
+	reg.EIP = uint32(uint16(reg.EIP) + diff + 3)
+}
+
+func (cpu *CPU) jmpRel8() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	diff := mem.GetCode8(1)

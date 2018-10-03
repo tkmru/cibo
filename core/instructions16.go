@@ -1,6 +1,10 @@
 package cibo
 
-import "log"
+import (
+	"fmt"
+	"log"
+	"os"
+)
 
 func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x00] = cpu.addRM8R8
@@ -24,6 +28,10 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x1e] = cpu.push16DS
 	cpu.Instr16[0x1f] = cpu.pop16DS
 
+	cpu.Instr32[0x3b] = cpu.cmpR16RM16
+	cpu.Instr32[0x3c] = cpu.cmpALImm8
+	cpu.Instr32[0x3d] = cpu.cmpAXImm16
+
 	for i := 0; i < 8; i++ {
 		cpu.Instr16[0x50+i] = cpu.push16Reg
 	}
@@ -46,6 +54,20 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x79] = cpu.jnsRel8
 	cpu.Instr16[0x7c] = cpu.jlRel8
 	cpu.Instr16[0x7e] = cpu.jleRel8
+	cpu.Instr16[0x83] = cpu.code83b16
+
+	cpu.Instr16[0x90] = cpu.nop
+
+	for i := 0; i < 8; i++ {
+		cpu.Instr16[0xb8+i] = cpu.movR16Imm16
+	}
+
+	/*
+		0xd8 - 0xdf: x87 FPU Instructions
+	*/
+
+	cpu.Instr16[0xe9] = cpu.jmpRel16
+	cpu.Instr16[0xeb] = cpu.jmpRel8
 }
 
 func (cpu *CPU) addRM8R8() {
@@ -261,4 +283,33 @@ func (cpu *CPU) overrideOperandTo32() {
 		log.Fatalf("Not Implemented: 0x%x\n", code)
 	}
 	cpu.Instr32[code]()
+}
+
+func (cpu *CPU) code83b16() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+
+	switch modrm.Opcode {
+	case 0:
+		//cpu.addRM16Imm8(&modrm)
+	case 1:
+		//cpu.orRM16Imm8(&modrm)
+	case 2:
+		//cpu.adcRM16Imm8(&modrm)
+	case 3:
+		//cpu.sbbRM16Imm8(&modrm)
+	case 4:
+		//cpu.andRM16Imm8(&modrm)
+	case 5:
+		//cpu.subRM16Imm8(&modrm)
+	case 6:
+		//cpu.xorRM16Imm8(&modrm)
+	case 7:
+		cpu.cmpRM16Imm8(&modrm)
+	default:
+		fmt.Printf("not implemented: 0x83 /%d\n", modrm.Opcode)
+		os.Exit(1)
+	}
 }

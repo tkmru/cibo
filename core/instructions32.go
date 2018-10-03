@@ -23,10 +23,12 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0x0d] = cpu.orEAXImm32
 	cpu.Instr32[0x0e] = cpu.push32CS
 	cpu.Instr32[0x0f] = cpu.code0Fb32
+
 	cpu.Instr32[0x16] = cpu.push32SS
 	cpu.Instr32[0x17] = cpu.pop32SS
 	cpu.Instr32[0x1e] = cpu.push32DS
 	cpu.Instr32[0x1f] = cpu.pop32DS
+
 	cpu.Instr32[0x3b] = cpu.cmpR32RM32
 	cpu.Instr32[0x3c] = cpu.cmpALImm8
 	cpu.Instr32[0x3d] = cpu.cmpEAXImm32
@@ -78,9 +80,9 @@ func (cpu *CPU) createTable32() {
 	/*
 		0xd8 - 0xdf: x87 FPU Instructions
 	*/
-	cpu.Instr32[0xe8] = cpu.callRelative
-	cpu.Instr32[0xe9] = cpu.nearJump
-	cpu.Instr32[0xeb] = cpu.shortJump
+	cpu.Instr32[0xe8] = cpu.callRel32
+	cpu.Instr32[0xe9] = cpu.jmpRel32
+	cpu.Instr32[0xeb] = cpu.jmpRel8
 	cpu.Instr32[0xec] = cpu.inALDX
 	cpu.Instr32[0xee] = cpu.outDXAL
 	cpu.Instr32[0xff] = cpu.codeFF
@@ -204,7 +206,7 @@ func (cpu *CPU) leave() {
 	reg.EIP += 1
 }
 
-func (cpu *CPU) callRelative() {
+func (cpu *CPU) callRel32() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	diff := mem.GetSignCode32(1)
