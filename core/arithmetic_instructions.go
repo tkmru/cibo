@@ -1,10 +1,5 @@
 package cibo
 
-import (
-	"fmt"
-	"os"
-)
-
 func (cpu *CPU) addRM32R32() {
 	reg := &cpu.X86registers
 	reg.EIP += 1
@@ -112,6 +107,14 @@ func (cpu *CPU) cmpEAXImm32() {
 	reg.updateEflagsSub32(eax, value, result)
 	reg.EIP += 5
 }
+func (cpu *CPU) incR16() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	index := mem.GetCode8(0) - 0x40
+	value := reg.Get16ByIndex(index) + 1
+	reg.Set16ByIndex(index, value)
+	reg.EIP += 1
+}
 
 func (cpu *CPU) incR32() {
 	reg := &cpu.X86registers
@@ -165,18 +168,4 @@ func (cpu *CPU) cmpRM32Imm8(modrm *ModRM) {
 func (cpu *CPU) incRM32(modrm *ModRM) {
 	value := modrm.getRM32(cpu)
 	modrm.setRM32(cpu, value+1)
-}
-
-func (cpu *CPU) codeFF() {
-	var modrm ModRM
-	reg := &cpu.X86registers
-	reg.EIP += 1
-	modrm.parse(cpu)
-	switch modrm.Opcode {
-	case 0:
-		cpu.incRM32(&modrm)
-	default:
-		fmt.Printf("not implemented: FF /%d\n", modrm.Opcode)
-		os.Exit(1)
-	}
 }

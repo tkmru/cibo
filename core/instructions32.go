@@ -48,6 +48,7 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0x66] = cpu.overrideOperandTo16
 	cpu.Instr32[0x68] = cpu.push32Imm32
 	cpu.Instr32[0x6a] = cpu.push32Imm8
+
 	cpu.Instr32[0x70] = cpu.joRel8
 	cpu.Instr32[0x71] = cpu.jnoRel8
 	cpu.Instr32[0x72] = cpu.jcRel8
@@ -60,10 +61,12 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0x7e] = cpu.jleRel8
 	cpu.Instr32[0x81] = cpu.code81b32
 	cpu.Instr32[0x83] = cpu.code83b32
+
 	cpu.Instr32[0x88] = cpu.movRM8R8
 	cpu.Instr32[0x89] = cpu.movRM32R32
 	cpu.Instr32[0x8a] = cpu.movR8RM8
 	cpu.Instr32[0x8b] = cpu.movR32RM32
+
 	cpu.Instr32[0x90] = cpu.nop
 
 	for i := 0; i < 8; i++ {
@@ -85,7 +88,7 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0xeb] = cpu.jmpRel8
 	cpu.Instr32[0xec] = cpu.inALDX
 	cpu.Instr32[0xee] = cpu.outDXAL
-	cpu.Instr32[0xff] = cpu.codeFF
+	cpu.Instr32[0xff] = cpu.codeFFb32
 }
 
 func (cpu *CPU) push32Reg() {
@@ -305,6 +308,20 @@ func (cpu *CPU) code83b32() {
 		cpu.cmpRM32Imm8(&modrm)
 	default:
 		fmt.Printf("not implemented: 0x83 /%d\n", modrm.Opcode)
+		os.Exit(1)
+	}
+}
+
+func (cpu *CPU) codeFFb32() {
+	var modrm ModRM
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	modrm.parse(cpu)
+	switch modrm.Opcode {
+	case 0:
+		cpu.incRM32(&modrm)
+	default:
+		fmt.Printf("not implemented: FF /%d\n", modrm.Opcode)
 		os.Exit(1)
 	}
 }

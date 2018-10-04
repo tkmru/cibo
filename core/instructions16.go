@@ -23,14 +23,19 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x0d] = cpu.orAXImm16
 	cpu.Instr16[0x0e] = cpu.push16CS
 	cpu.Instr16[0x0f] = cpu.code0F16
+
 	cpu.Instr16[0x16] = cpu.push16SS
 	cpu.Instr16[0x17] = cpu.pop16SS
 	cpu.Instr16[0x1e] = cpu.push16DS
 	cpu.Instr16[0x1f] = cpu.pop16DS
 
-	cpu.Instr32[0x3b] = cpu.cmpR16RM16
-	cpu.Instr32[0x3c] = cpu.cmpALImm8
-	cpu.Instr32[0x3d] = cpu.cmpAXImm16
+	cpu.Instr16[0x3b] = cpu.cmpR16RM16
+	cpu.Instr16[0x3c] = cpu.cmpALImm8
+	cpu.Instr16[0x3d] = cpu.cmpAXImm16
+
+	for i := 0; i < 8; i++ {
+		cpu.Instr16[0x40+i] = cpu.incR16
+	}
 
 	for i := 0; i < 8; i++ {
 		cpu.Instr16[0x50+i] = cpu.push16Reg
@@ -56,11 +61,22 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x7e] = cpu.jleRel8
 	cpu.Instr16[0x83] = cpu.code83b16
 
+	cpu.Instr16[0x88] = cpu.movRM8R8
+	cpu.Instr16[0x89] = cpu.movRM16R16
+	cpu.Instr16[0x8a] = cpu.movR8RM8
+	cpu.Instr16[0x8b] = cpu.movR16RM16
+
 	cpu.Instr16[0x90] = cpu.nop
+
+	for i := 0; i < 8; i++ {
+		cpu.Instr16[0xb0+i] = cpu.movR8Imm8
+	}
 
 	for i := 0; i < 8; i++ {
 		cpu.Instr16[0xb8+i] = cpu.movR16Imm16
 	}
+
+	cpu.Instr16[0xc7] = cpu.movRM16Imm16
 
 	/*
 		0xd8 - 0xdf: x87 FPU Instructions
