@@ -80,3 +80,43 @@ func TestOr16(t *testing.T) {
 		t.Errorf("got AX: %v\nexpected AX: %v", actual, expected)
 	}
 }
+
+func TestIncAndDec16(t *testing.T) {
+	beginAddress := 0x7c00
+	bitMode := 16
+	emu := cibo.NewEmulator(bitMode, beginAddress, 2, true)
+	cpu := emu.CPU
+	reg := &cpu.X86registers
+
+	assembly := "" +
+		"mov eax, 0;" +
+		"mov ebx, 2;" +
+		"inc eax;" +
+		"dec ebx"
+	ks, err := keystone.New(keystone.ARCH_X86, keystone.MODE_16)
+	if err != nil {
+		panic(err)
+	}
+	defer ks.Close()
+
+	if insn, _, ok := ks.Assemble(assembly, 0); !ok {
+		panic(fmt.Errorf("Could not assemble instruction"))
+	} else {
+		emu.RAM = (*(*[]byte)(unsafe.Pointer(&insn)))
+	}
+
+	reg.Init()
+	emu.Run()
+
+	actualAX := reg.EAX
+	expectedAX := uint32(1)
+	if actualAX != expectedAX {
+		t.Errorf("got AX: %v\nexpected AX: %v", actualAX, expectedAX)
+	}
+
+	actualBX := reg.EBX
+	expectedBX := uint32(1)
+	if actualBX != expectedBX {
+		t.Errorf("got AX: %v\nexpected AX: %v", actualBX, expectedBX)
+	}
+}

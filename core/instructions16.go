@@ -38,11 +38,15 @@ func (cpu *CPU) createTable16() {
 	}
 
 	for i := 0; i < 8; i++ {
-		cpu.Instr16[0x50+i] = cpu.push16Reg
+		cpu.Instr16[0x48+i] = cpu.decR16
 	}
 
 	for i := 0; i < 8; i++ {
-		cpu.Instr16[0x58+i] = cpu.pop16Reg
+		cpu.Instr16[0x50+i] = cpu.pushR16
+	}
+
+	for i := 0; i < 8; i++ {
+		cpu.Instr16[0x58+i] = cpu.popR16
 	}
 
 	cpu.Instr16[0x66] = cpu.overrideOperandTo32
@@ -76,126 +80,15 @@ func (cpu *CPU) createTable16() {
 		cpu.Instr16[0xb8+i] = cpu.movR16Imm16
 	}
 
+	cpu.Instr16[0xc3] = cpu.ret16
 	cpu.Instr16[0xc7] = cpu.movRM16Imm16
-
+	cpu.Instr16[0xc9] = cpu.leave16
 	/*
 		0xd8 - 0xdf: x87 FPU Instructions
 	*/
-
+	cpu.Instr16[0xe8] = cpu.callRel16
 	cpu.Instr16[0xe9] = cpu.jmpRel16
 	cpu.Instr16[0xeb] = cpu.jmpRel8
-}
-
-func (cpu *CPU) addRM8R8() {
-	reg := &cpu.X86registers
-	reg.EIP += 1
-	var modrm ModRM
-	modrm.parse(cpu)
-	r8 := modrm.getR8(cpu)
-	rm8 := modrm.getRM8(cpu)
-	modrm.setRM8(cpu, rm8+r8)
-}
-
-func (cpu *CPU) addRM16R16() {
-	reg := &cpu.X86registers
-	reg.EIP += 1
-	var modrm ModRM
-	modrm.parse(cpu)
-	r16 := modrm.getR16(cpu)
-	rm16 := modrm.getRM16(cpu)
-	modrm.setRM16(cpu, rm16+r16)
-}
-
-func (cpu *CPU) addR8RM8() {
-	reg := &cpu.X86registers
-	reg.EIP += 1
-	var modrm ModRM
-	modrm.parse(cpu)
-	r8 := modrm.getR8(cpu)
-	rm8 := modrm.getRM8(cpu)
-	modrm.setR8(cpu, rm8+r8)
-}
-
-func (cpu *CPU) addR16RM16() {
-	reg := &cpu.X86registers
-	reg.EIP += 1
-	var modrm ModRM
-	modrm.parse(cpu)
-	r16 := modrm.getR16(cpu)
-	rm16 := modrm.getRM16(cpu)
-	modrm.setR16(cpu, rm16+r16)
-}
-
-func (cpu *CPU) addALImm8() {
-	reg := &cpu.X86registers
-	mem := cpu.Memory
-	value := mem.GetCode8(1)
-	reg.EAX += uint32(value)
-	reg.EIP += 2
-}
-
-func (cpu *CPU) addAXImm16() {
-	reg := &cpu.X86registers
-	mem := cpu.Memory
-	value := mem.GetCode16(1)
-	reg.EAX += uint32(value)
-	reg.EIP += 3
-}
-
-func (cpu *CPU) orRM8R8() {
-	reg := &cpu.X86registers
-	reg.EIP += 1
-	var modrm ModRM
-	modrm.parse(cpu)
-	r8 := modrm.getR8(cpu)
-	rm8 := modrm.getRM8(cpu)
-	modrm.setRM8(cpu, (rm8 | r8))
-}
-
-func (cpu *CPU) orRM16R16() {
-	reg := &cpu.X86registers
-	reg.EIP += 1
-	var modrm ModRM
-	modrm.parse(cpu)
-	r16 := modrm.getR16(cpu)
-	rm16 := modrm.getRM16(cpu)
-	modrm.setRM16(cpu, (rm16 | r16))
-}
-
-func (cpu *CPU) orR8RM8() {
-	reg := &cpu.X86registers
-	reg.EIP += 1
-	var modrm ModRM
-	modrm.parse(cpu)
-	r8 := modrm.getR8(cpu)
-	rm8 := modrm.getRM8(cpu)
-	modrm.setR8(cpu, (rm8 | r8))
-}
-
-func (cpu *CPU) orR16RM16() {
-	reg := &cpu.X86registers
-	reg.EIP += 1
-	var modrm ModRM
-	modrm.parse(cpu)
-	r16 := modrm.getR16(cpu)
-	rm16 := modrm.getRM16(cpu)
-	modrm.setR16(cpu, (rm16 | r16))
-}
-
-func (cpu *CPU) orALImm8() {
-	reg := &cpu.X86registers
-	mem := cpu.Memory
-	value := mem.GetCode8(1)
-	reg.EAX = reg.EAX | uint32(value)
-	reg.EIP += 2
-}
-
-func (cpu *CPU) orAXImm16() {
-	reg := &cpu.X86registers
-	mem := cpu.Memory
-	value := mem.GetCode16(1)
-	reg.EAX = reg.EAX | uint32(value)
-	reg.EIP += 3
 }
 
 func (cpu *CPU) push16ES() {
@@ -274,7 +167,7 @@ func (cpu *CPU) push16Imm8() {
 	reg.EIP += 2
 }
 
-func (cpu *CPU) push16Reg() {
+func (cpu *CPU) pushR16() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0x50
@@ -282,7 +175,7 @@ func (cpu *CPU) push16Reg() {
 	reg.EIP += 1
 }
 
-func (cpu *CPU) pop16Reg() {
+func (cpu *CPU) popR16() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0x58
@@ -328,4 +221,27 @@ func (cpu *CPU) code83b16() {
 		fmt.Printf("not implemented: 0x83 /%d\n", modrm.Opcode)
 		os.Exit(1)
 	}
+}
+
+func (cpu *CPU) ret16() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	reg.EIP = uint32(mem.Pop16())
+}
+
+func (cpu *CPU) leave16() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	ebp := reg.EBP
+	reg.ESP = ebp
+	reg.EBP = uint32(mem.Pop16())
+	reg.EIP += 1
+}
+
+func (cpu *CPU) callRel16() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	diff := mem.GetSignCode16(1)
+	mem.Push16(uint16(reg.EIP + 3))
+	reg.EIP += uint32(uint32(diff) + 3)
 }

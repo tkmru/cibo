@@ -1,5 +1,25 @@
 package cibo
 
+func (cpu *CPU) addRM8R8() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r8 := modrm.getR8(cpu)
+	rm8 := modrm.getRM8(cpu)
+	modrm.setRM8(cpu, rm8+r8)
+}
+
+func (cpu *CPU) addRM16R16() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r16 := modrm.getR16(cpu)
+	rm16 := modrm.getRM16(cpu)
+	modrm.setRM16(cpu, rm16+r16)
+}
+
 func (cpu *CPU) addRM32R32() {
 	reg := &cpu.X86registers
 	reg.EIP += 1
@@ -8,6 +28,26 @@ func (cpu *CPU) addRM32R32() {
 	r32 := modrm.getR32(cpu)
 	rm32 := modrm.getRM32(cpu)
 	modrm.setRM32(cpu, rm32+r32)
+}
+
+func (cpu *CPU) addR8RM8() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r8 := modrm.getR8(cpu)
+	rm8 := modrm.getRM8(cpu)
+	modrm.setR8(cpu, rm8+r8)
+}
+
+func (cpu *CPU) addR16RM16() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r16 := modrm.getR16(cpu)
+	rm16 := modrm.getRM16(cpu)
+	modrm.setR16(cpu, rm16+r16)
 }
 
 func (cpu *CPU) addR32RM32() {
@@ -20,12 +60,48 @@ func (cpu *CPU) addR32RM32() {
 	modrm.setR32(cpu, rm32+r32)
 }
 
+func (cpu *CPU) addALImm8() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode8(1)
+	reg.EAX += uint32(value)
+	reg.EIP += 2
+}
+
+func (cpu *CPU) addAXImm16() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode16(1)
+	reg.EAX += uint32(value)
+	reg.EIP += 3
+}
+
 func (cpu *CPU) addEAXImm32() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	value := mem.GetCode32(1)
 	reg.EAX += uint32(value)
 	reg.EIP += 5
+}
+
+func (cpu *CPU) orRM8R8() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r8 := modrm.getR8(cpu)
+	rm8 := modrm.getRM8(cpu)
+	modrm.setRM8(cpu, (rm8 | r8))
+}
+
+func (cpu *CPU) orRM16R16() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r16 := modrm.getR16(cpu)
+	rm16 := modrm.getRM16(cpu)
+	modrm.setRM16(cpu, (rm16 | r16))
 }
 
 func (cpu *CPU) orRM32R32() {
@@ -38,6 +114,26 @@ func (cpu *CPU) orRM32R32() {
 	modrm.setRM32(cpu, (rm32 | r32))
 }
 
+func (cpu *CPU) orR8RM8() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r8 := modrm.getR8(cpu)
+	rm8 := modrm.getRM8(cpu)
+	modrm.setR8(cpu, (rm8 | r8))
+}
+
+func (cpu *CPU) orR16RM16() {
+	reg := &cpu.X86registers
+	reg.EIP += 1
+	var modrm ModRM
+	modrm.parse(cpu)
+	r16 := modrm.getR16(cpu)
+	rm16 := modrm.getRM16(cpu)
+	modrm.setR16(cpu, (rm16 | r16))
+}
+
 func (cpu *CPU) orR32RM32() {
 	reg := &cpu.X86registers
 	reg.EIP += 1
@@ -46,6 +142,22 @@ func (cpu *CPU) orR32RM32() {
 	r32 := modrm.getR32(cpu)
 	rm32 := modrm.getRM32(cpu)
 	modrm.setR32(cpu, (rm32 | r32))
+}
+
+func (cpu *CPU) orALImm8() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode8(1)
+	reg.EAX = reg.EAX | uint32(value)
+	reg.EIP += 2
+}
+
+func (cpu *CPU) orAXImm16() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	value := mem.GetCode16(1)
+	reg.EAX = reg.EAX | uint32(value)
+	reg.EIP += 3
 }
 
 func (cpu *CPU) orEAXImm32() {
@@ -107,6 +219,7 @@ func (cpu *CPU) cmpEAXImm32() {
 	reg.updateEflagsSub32(eax, value, result)
 	reg.EIP += 5
 }
+
 func (cpu *CPU) incR16() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
@@ -121,6 +234,24 @@ func (cpu *CPU) incR32() {
 	mem := cpu.Memory
 	index := mem.GetCode8(0) - 0x40
 	value := reg.GetByIndex(index) + 1
+	reg.SetByIndex(index, value)
+	reg.EIP += 1
+}
+
+func (cpu *CPU) decR16() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	index := mem.GetCode8(0) - 0x48
+	value := reg.Get16ByIndex(index) - 1
+	reg.Set16ByIndex(index, value)
+	reg.EIP += 1
+}
+
+func (cpu *CPU) decR32() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	index := mem.GetCode8(0) - 0x48
+	value := reg.GetByIndex(index) - 1
 	reg.SetByIndex(index, value)
 	reg.EIP += 1
 }

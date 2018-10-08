@@ -38,11 +38,15 @@ func (cpu *CPU) createTable32() {
 	}
 
 	for i := 0; i < 8; i++ {
-		cpu.Instr32[0x50+i] = cpu.push32Reg
+		cpu.Instr32[0x48+i] = cpu.decR32
 	}
 
 	for i := 0; i < 8; i++ {
-		cpu.Instr32[0x58+i] = cpu.pop32Reg
+		cpu.Instr32[0x50+i] = cpu.pushR32
+	}
+
+	for i := 0; i < 8; i++ {
+		cpu.Instr32[0x58+i] = cpu.popR32
 	}
 
 	cpu.Instr32[0x66] = cpu.overrideOperandTo16
@@ -77,9 +81,9 @@ func (cpu *CPU) createTable32() {
 		cpu.Instr32[0xb8+i] = cpu.movR32Imm32
 	}
 
-	cpu.Instr32[0xc3] = cpu.ret
+	cpu.Instr32[0xc3] = cpu.ret32
 	cpu.Instr32[0xc7] = cpu.movRM32Imm32
-	cpu.Instr32[0xc9] = cpu.leave
+	cpu.Instr32[0xc9] = cpu.leave32
 	/*
 		0xd8 - 0xdf: x87 FPU Instructions
 	*/
@@ -91,7 +95,7 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0xff] = cpu.codeFFb32
 }
 
-func (cpu *CPU) push32Reg() {
+func (cpu *CPU) pushR32() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0x50
@@ -115,7 +119,7 @@ func (cpu *CPU) push32Imm8() {
 	reg.EIP += 2
 }
 
-func (cpu *CPU) pop32Reg() {
+func (cpu *CPU) popR32() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	regIndex := mem.GetCode8(0) - 0x58
@@ -194,13 +198,13 @@ func (cpu *CPU) overrideOperandTo16() {
 	cpu.Instr16[code]()
 }
 
-func (cpu *CPU) ret() {
+func (cpu *CPU) ret32() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	reg.EIP = mem.Pop32()
 }
 
-func (cpu *CPU) leave() {
+func (cpu *CPU) leave32() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
 	ebp := reg.EBP
