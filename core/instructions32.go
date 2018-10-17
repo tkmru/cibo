@@ -91,7 +91,9 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0xe9] = cpu.jmpRel32
 	cpu.Instr32[0xeb] = cpu.jmpRel8
 	cpu.Instr32[0xec] = cpu.inALDX
+	cpu.Instr32[0xed] = cpu.inEAXDX
 	cpu.Instr32[0xee] = cpu.outDXAL
+	cpu.Instr32[0xef] = cpu.outDXEAX
 	cpu.Instr32[0xff] = cpu.codeFFb32
 }
 
@@ -230,6 +232,14 @@ func (cpu *CPU) inALDX() {
 	reg.EIP += 1
 }
 
+func (cpu *CPU) inEAXDX() {
+	reg := &cpu.X86registers
+	var address uint16 = uint16(reg.EDX & 0xffff)
+	var value uint32 = ioIn32(address)
+	reg.EAX = value
+	reg.EIP += 1
+}
+
 func (cpu *CPU) outDXAL() {
 	reg := &cpu.X86registers
 	var address uint16 = uint16(reg.EDX & 0xffff)
@@ -238,24 +248,11 @@ func (cpu *CPU) outDXAL() {
 	reg.EIP += 1
 }
 
-func ioIn8(address uint16) uint8 {
-	fmt.Println("[cibo] asking for input:")
-	switch address {
-	case 0x03f8:
-		var input []byte = make([]byte, 1)
-		os.Stdin.Read(input)
-		return uint8(input[0])
-		break
-	}
-	return 0
-}
-
-func ioOut8(address uint16, ascii uint8) {
-	switch address {
-	case 0x03f8:
-		fmt.Println(string(ascii))
-		break
-	}
+func (cpu *CPU) outDXEAX() {
+	reg := &cpu.X86registers
+	var address uint16 = uint16(reg.EDX & 0xffff)
+	ioOut32(address, reg.EAX)
+	reg.EIP += 1
 }
 
 func (cpu *CPU) code81b32() {
