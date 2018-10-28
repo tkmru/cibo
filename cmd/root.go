@@ -13,6 +13,7 @@ const (
 )
 
 var debugFlag bool
+var guiFlag bool
 var beginAddress int
 var bitMode int
 
@@ -26,7 +27,7 @@ var rootCmd = &cobra.Command{
 		var path string
 		path = args[0]
 
-		emu := cibo.NewEmulatorWithLoadFile(bitMode, beginAddress, path, debugFlag)
+		emu := cibo.NewEmulatorWithLoadFile(bitMode, beginAddress, path, guiFlag, debugFlag)
 		cpu := emu.CPU
 		reg := &cpu.X86registers
 
@@ -48,6 +49,7 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.Flags().IntVarP(&beginAddress, "address", "a", 0x7c00, "begin address")
 	rootCmd.Flags().IntVarP(&bitMode, "bit", "b", 32, "bit mode")
+	rootCmd.PersistentFlags().BoolVarP(&guiFlag, "gui", "g", false, "gui mode")
 	rootCmd.PersistentFlags().BoolVarP(&debugFlag, "debug", "", false, "debug mode")
 }
 

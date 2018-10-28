@@ -12,7 +12,7 @@ import (
 func overrideOperandTo16(t *testing.T) {
 	beginAddress := 0x7c00
 	bitMode := 32
-	emu := cibo.NewEmulator(bitMode, beginAddress, 2, true)
+	emu := cibo.NewEmulator(bitMode, beginAddress, 2, false, true)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 
@@ -43,7 +43,7 @@ func overrideOperandTo16(t *testing.T) {
 func overrideOperandTo32(t *testing.T) {
 	beginAddress := 0x7c00
 	bitMode := 16
-	emu := cibo.NewEmulator(bitMode, beginAddress, 2, true)
+	emu := cibo.NewEmulator(bitMode, beginAddress, 2, false, true)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 

@@ -37,7 +37,7 @@ func TestCallRel16(t *testing.T) {
 		binary = (*(*[]byte)(unsafe.Pointer(&insn)))
 	}
 
-	emu := cibo.NewEmulator(bitMode, beginAddress, int64(len(binary)), true)
+	emu := cibo.NewEmulator(bitMode, beginAddress, int64(len(binary)), false, true)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 	emu.RAM = binary
@@ -86,7 +86,7 @@ func TestCallRel32(t *testing.T) {
 		binary = (*(*[]byte)(unsafe.Pointer(&insn)))
 	}
 
-	emu := cibo.NewEmulator(bitMode, beginAddress, int64(len(binary)), true)
+	emu := cibo.NewEmulator(bitMode, beginAddress, int64(len(binary)), false, true)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 	emu.RAM = binary

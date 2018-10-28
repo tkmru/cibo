@@ -12,7 +12,7 @@ import (
 func TestAdd16(t *testing.T) {
 	beginAddress := 0x7c00
 	bitMode := 16
-	emu := cibo.NewEmulator(bitMode, beginAddress, 2, true)
+	emu := cibo.NewEmulator(bitMode, beginAddress, 2, false, true)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 
@@ -48,7 +48,7 @@ func TestAdd16(t *testing.T) {
 func TestOr16(t *testing.T) {
 	beginAddress := 0x7c00
 	bitMode := 16
-	emu := cibo.NewEmulator(bitMode, beginAddress, 2, true)
+	emu := cibo.NewEmulator(bitMode, beginAddress, 2, false, true)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 
@@ -84,7 +84,7 @@ func TestOr16(t *testing.T) {
 func TestIncAndDec16(t *testing.T) {
 	beginAddress := 0x7c00
 	bitMode := 16
-	emu := cibo.NewEmulator(bitMode, beginAddress, 2, true)
+	emu := cibo.NewEmulator(bitMode, beginAddress, 2, false, true)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 

@@ -13,6 +13,7 @@ type Emulator struct {
 	RAM         []byte
 	bitMode     int
 	baseAddress int
+	guiFlag     bool
 	debugFlag   bool
 	// TODO: add device
 }
@@ -20,13 +21,18 @@ type Emulator struct {
 func NewEmulator(bitMode int, beginAddress int, memSize int64, options ...interface{}) *Emulator {
 	ram := make([]byte, memSize)
 	debugFlag := false
-	for _, option := range options {
+	guiFlag := false
+	for i, option := range options {
 		switch v := option.(type) {
 		case bool:
-			debugFlag = v
+			if i == 0 {
+				guiFlag = v
+			} else if i == 1 {
+                debugFlag = v
+			}
 		}
 	}
-	emu := Emulator{nil, ram, bitMode, beginAddress, debugFlag}
+	emu := Emulator{nil, ram, bitMode, beginAddress, guiFlag, debugFlag}
 	emu.CPU = NewCPU(&emu)
 	reg := &emu.CPU.X86registers
 	reg.EIP = uint32(beginAddress)
@@ -43,13 +49,18 @@ func NewEmulatorWithLoadFile(bitMode int, beginAddress int, path string, options
 	}
 	memSize := fileinfo.Size()
 	debugFlag := false
-	for _, option := range options {
+	guiFlag := false
+	for i, option := range options {
 		switch v := option.(type) {
 		case bool:
-			debugFlag = v
+			if i == 0 {
+				guiFlag = v
+			} else if i == 1 {
+                debugFlag = v
+			}
 		}
 	}
-	emu := NewEmulator(bitMode, beginAddress, memSize, debugFlag)
+	emu := NewEmulator(bitMode, beginAddress, memSize, guiFlag, debugFlag)
 	RAM := emu.RAM
 	f, _ := os.Open(filePath)
 	copySize, _ := io.ReadFull(f, RAM)
