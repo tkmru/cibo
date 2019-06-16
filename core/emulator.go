@@ -75,7 +75,6 @@ func (emu *Emulator) Run() {
 			for i := 0; i < int(ramSize); i++ {
 				code := uint8(mem.GetCode8(0))
 				log.Printf("EIP = 0x%X, Opcode = 0x%02X\n", reg.EIP, code)
-
 				if cpu.Instr16[code] == nil {
 					log.Fatalf("Not Implemented: 0x%x\n", code)
 					break
@@ -92,7 +91,38 @@ func (emu *Emulator) Run() {
 			for i := 0; i < int(ramSize); i++ {
 				code := uint8(mem.GetCode8(0))
 				log.Printf("EIP = 0x%X, Opcode = 0x%02X\n", reg.EIP, code)
+				if cpu.Instr32[code] == nil {
+					log.Fatalf("Not Implemented: 0x%x\n", code)
+					break
+				}
 
+				cpu.Instr32[code]()
+
+				if (reg.EIP <= uint32(emu.baseAddress)) || (uint32(mappingEnd) <= reg.EIP) {
+					log.Printf("No mapping area: 0x%X\n", reg.EIP)
+					break
+				}
+			}
+		}
+	} else {
+		if emu.bitMode == 16 {
+			for i := 0; i < int(ramSize); i++ {
+				code := uint8(mem.GetCode8(0))
+				if cpu.Instr16[code] == nil {
+					log.Fatalf("Not Implemented: 0x%x\n", code)
+					break
+				}
+
+				cpu.Instr16[code]()
+
+				if (reg.EIP <= uint32(emu.baseAddress)) || (uint32(mappingEnd) <= reg.EIP) {
+					log.Printf("No mapping area: 0x%X\n", reg.EIP)
+					break
+				}
+			}
+		} else if emu.bitMode == 32 {
+			for i := 0; i < int(ramSize); i++ {
+				code := uint8(mem.GetCode8(0))
 				if cpu.Instr32[code] == nil {
 					log.Fatalf("Not Implemented: 0x%x\n", code)
 					break
