@@ -37,7 +37,7 @@ func TestBranchRel8WithZF16(t *testing.T) {
 		binary = (*(*[]byte)(unsafe.Pointer(&insn)))
 	}
 
-	emu := cibo.NewEmulator(bitMode, beginAddress, int64(len(binary)), false, true)
+	emu := cibo.NewEmulator(bitMode, beginAddress, int64(len(binary)), true)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 	emu.RAM = binary
@@ -84,7 +84,7 @@ func TestBranchRel8WithZF32(t *testing.T) {
 		binary = (*(*[]byte)(unsafe.Pointer(&insn)))
 	}
 
-	emu := cibo.NewEmulator(bitMode, beginAddress, 29, false, true)
+	emu := cibo.NewEmulator(bitMode, beginAddress, 29, true)
 	cpu := emu.CPU
 	reg := &cpu.X86registers
 	emu.RAM = binary
