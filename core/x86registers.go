@@ -139,13 +139,23 @@ func (r *X86registers) Set16ByIndex(index uint8, value uint16) {
 }
 
 func (r *X86registers) Set8ByIndex(index uint8, value uint8) {
-	registerName := registerIndex[index]
-	registersPointer := reflect.ValueOf(r) // pointer to struct - addressable
-	registers := registersPointer.Elem()   // struct
-	targetRegister := registers.FieldByName(registerName)
-	// Rewrite only lower 8 bits
-	value32 := (targetRegister.Interface().(uint32) & 0xFFFFFF00) + uint32(value)
-	targetRegister.Set(reflect.ValueOf(value32))
+	if index <= 3 {
+		// Rewrite lower 8 bits
+		registerName := registerIndex[index]
+		registersPointer := reflect.ValueOf(r) // pointer to struct - addressable
+		registers := registersPointer.Elem()   // struct
+		targetRegister := registers.FieldByName(registerName)
+		value32 := (targetRegister.Interface().(uint32) & 0xFFFFFF00) + uint32(value)
+		targetRegister.Set(reflect.ValueOf(value32))
+	} else {
+		// Rewrite higher 8 bits
+		registerName := registerIndex[index - 4]
+		registersPointer := reflect.ValueOf(r) // pointer to struct - addressable
+		registers := registersPointer.Elem()   // struct
+		targetRegister := registers.FieldByName(registerName)
+		value32 := (targetRegister.Interface().(uint32) & 0xFFFF00FF) + (uint32(value) << 8)
+		targetRegister.Set(reflect.ValueOf(value32))
+	}
 }
 
 func (r *X86registers) updateEflagsSub16(v1 uint16, v2 uint16, result uint32) {
