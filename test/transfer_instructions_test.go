@@ -72,13 +72,13 @@ func TestMovHigherR8Imm8(t *testing.T) {
 	reg.Init()
 	emu.Run()
 
-	actualAH := reg.EAX % uint32(0xFF)
+	actualAH := reg.EAX >> 8
 	expectedAH := uint32(0x1)
 	if actualAH != expectedAH {
 		t.Errorf("got AH: %v\nexpected AH: %v", actualAH, expectedAH)
 	}
 
-	actualBH := reg.EBX % uint32(0xFF)
+	actualBH := reg.EBX >> 8
 	expectedBH := uint32(0x4)
 	if actualAH != expectedAH {
 		t.Errorf("got BH: %v\nexpected BH: %v", actualBH, expectedBH)
