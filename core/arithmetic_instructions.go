@@ -256,6 +256,26 @@ func (cpu *CPU) decR32() {
 	reg.EIP += 1
 }
 
+func (cpu *CPU) subAXImm16() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	imm16 := mem.GetCode16(1)
+	base := reg.EAX
+	reg.EAX = base - uint32(imm16)
+	reg.EIP += 3
+	reg.updateEflagsSub16(uint16(base), imm16, reg.EAX)
+}
+
+func (cpu *CPU) subEAXImm32() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	imm32 := mem.GetCode32(1)
+	base := reg.EAX
+	reg.EAX = reg.EAX - imm32
+	reg.EIP += 5
+	reg.updateEflagsSub32(base, imm32, uint64(reg.EAX))
+}
+
 func (cpu *CPU) subRM32Imm32(modrm *ModRM) {
 	reg := &cpu.X86registers
 	mem := cpu.Memory

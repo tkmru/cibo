@@ -29,6 +29,25 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0x1e] = cpu.push32DS
 	cpu.Instr32[0x1f] = cpu.pop32DS
 
+	// cpu.Instr32[0x21] = cpu.andRM32R32
+	// cpu.Instr32[0x22] = cpu.andR8RM8
+	// cpu.Instr32[0x23] = cpu.andR32RM32
+	// cpu.Instr32[0x24] = cpu.andALImm8
+	// cpu.Instr32[0x25] = cpu.andEAXImm32
+
+	// cpu.Instr32[0x28] = cpu.subRM8R8
+	// cpu.Instr32[0x29] = cpu.subRM32R32
+	// cpu.Instr32[0x2a] = cpu.subR8RM8
+	// cpu.Instr32[0x2b] = cpu.subR32RM32
+	// cpu.Instr32[0x2c] = cpu.subALImm8
+	cpu.Instr32[0x2d] = cpu.subEAXImm32
+
+	// cpu.Instr32[0x31] = cpu.xorRM32R32
+	// cpu.Instr32[0x32] = cpu.xorR8RM8
+	// cpu.Instr32[0x33] = cpu.xorR32RM32
+	// cpu.Instr32[0x34] = cpu.xorALImm8
+	// cpu.Instr32[0x35] = cpu.xorEAXImm32
+
 	cpu.Instr32[0x3b] = cpu.cmpR32RM32
 	cpu.Instr32[0x3c] = cpu.cmpALImm8
 	cpu.Instr32[0x3d] = cpu.cmpEAXImm32

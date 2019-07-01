@@ -29,6 +29,25 @@ func (cpu *CPU) createTable16() {
 	cpu.Instr16[0x1e] = cpu.push16DS
 	cpu.Instr16[0x1f] = cpu.pop16DS
 
+	// cpu.Instr16[0x21] = cpu.andRM16R16
+	// cpu.Instr16[0x22] = cpu.andR8RM8
+	// cpu.Instr16[0x23] = cpu.andR16RM16
+	// cpu.Instr16[0x24] = cpu.andALImm8
+	// cpu.Instr16[0x25] = cpu.andAXImm16
+
+	// cpu.Instr16[0x28] = cpu.subRM8R8
+	// cpu.Instr16[0x29] = cpu.subRM16R16
+	// cpu.Instr16[0x2a] = cpu.subR8RM8
+	// cpu.Instr16[0x2b] = cpu.subR16RM16
+	// cpu.Instr16[0x2c] = cpu.subALImm8
+	cpu.Instr16[0x2d] = cpu.subAXImm16
+
+	// cpu.Instr16[0x31] = cpu.xorRM16R16
+	// cpu.Instr16[0x32] = cpu.xorR8RM8
+	// cpu.Instr16[0x33] = cpu.xorR16RM16
+	// cpu.Instr16[0x34] = cpu.xorALImm8
+	// cpu.Instr16[0x35] = cpu.xorAXImm16
+
 	cpu.Instr16[0x3b] = cpu.cmpR16RM16
 	cpu.Instr16[0x3c] = cpu.cmpALImm8
 	cpu.Instr16[0x3d] = cpu.cmpAXImm16

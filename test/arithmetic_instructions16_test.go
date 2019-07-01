@@ -120,3 +120,35 @@ func TestIncAndDec16(t *testing.T) {
 		t.Errorf("got AX: %v\nexpected AX: %v", actualBX, expectedBX)
 	}
 }
+
+func subAXImm16(t *testing.T) {
+	assembly := "mov ax, 0x30;" +
+		"sub ax, 0x10;" 
+
+	ks, err := keystone.New(keystone.ARCH_X86, keystone.MODE_32)
+	if err != nil {
+		panic(err)
+	}
+	defer ks.Close()
+
+	if insn, _, ok := ks.Assemble(assembly, 0); !ok {
+		panic(fmt.Errorf("Could not assemble instruction"))
+	} else {	
+		insnBytes := (*(*[]byte)(unsafe.Pointer(&insn)))
+		beginAddress := 0x7c00
+		bitMode := 16
+		emu := cibo.NewEmulator(bitMode, beginAddress, int64(len(insnBytes)), true)
+		cpu := emu.CPU
+		reg := &cpu.X86registers
+		emu.RAM = insnBytes
+
+		reg.Init()
+		emu.Run()
+
+		actualEAX := reg.EAX
+		expectedEAX := uint32(0x20)
+		if actualEAX != expectedEAX {
+			t.Errorf("got EAX: %v\nexpected EAX: %v", actualEAX, expectedEAX)
+		}
+	}
+}
