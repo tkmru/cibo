@@ -218,7 +218,7 @@ func (r *X86registers) updateEflagsSub32(v1 uint32, v2 uint32, result uint64) {
 	}
 }
 
-func (r *X86registers) updateEflagsAdd(v1 uint32, v2 uint32, result uint64) {
+func (r *X86registers) updateEflagsAdd32(v1 uint32, v2 uint32, result uint64) {
 	var sign1 int = int(v1 >> 31)
 	var sign2 int = int(v2 >> 31)
 	var signr int = int((result >> 31) & 1)
@@ -486,4 +486,13 @@ func (r *X86registers) SetID() {
 func (r *X86registers) RemoveID() {
 	mask := ^2097152
 	r.EFLAGS &= uint32(mask)
+}
+
+func (r *X86registers) checkParity(v uint8) bool {
+	var p uint8 = 1
+	var i uint8
+	for i = 0; i < 8; i++ {
+		p ^= (v >> i) & 1;
+	}
+	return p == 1
 }
