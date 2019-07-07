@@ -9,9 +9,11 @@ import (
 	"github.com/tkmru/cibo/core"
 )
 
-func subEAXImm32(t *testing.T) {
-	assembly := "mov eax, 0x30;" +
-		"sub eax, 0x10;" 
+func TestSub32(t *testing.T) {
+	assembly := "mov eax, 0x40;" +
+		"mov ebx, 0x10;" +
+		"sub eax, 0x10;" +
+		"sub eax, ebx;" 
 
 	ks, err := keystone.New(keystone.ARCH_X86, keystone.MODE_32)
 	if err != nil {

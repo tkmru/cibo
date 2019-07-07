@@ -256,6 +256,54 @@ func (cpu *CPU) decR32() {
 	reg.EIP += 1
 }
 
+func (cpu *CPU) subRM16R16() {
+	reg := &cpu.X86registers
+	var modrm ModRM
+	reg.EIP += 1
+	modrm.parse(cpu)
+	rm16 := modrm.getRM16(cpu)
+	r16 := modrm.getR16(cpu)
+	result := uint32(rm16) - uint32(r16)
+	modrm.setRM16(cpu, uint16(result))
+	reg.updateEflagsSub16(rm16, r16, result)
+}
+
+func (cpu *CPU) subRM32R32() {
+	reg := &cpu.X86registers
+	var modrm ModRM
+	reg.EIP += 1
+	modrm.parse(cpu)
+	rm32 := modrm.getRM32(cpu)
+	r32 := modrm.getR32(cpu)
+	result := uint64(rm32) - uint64(r32)
+	modrm.setRM32(cpu, uint32(result))
+	reg.updateEflagsSub32(rm32, r32, result)
+}
+
+func (cpu *CPU) subR16RM16() {
+	reg := &cpu.X86registers
+	var modrm ModRM
+	reg.EIP += 1
+	modrm.parse(cpu)
+	r16 := modrm.getR16(cpu)
+	rm16 := modrm.getRM16(cpu)
+	result := uint32(r16) - uint32(rm16)
+	modrm.setR16(cpu, uint16(result))
+	reg.updateEflagsSub16(r16, rm16, result)
+}
+
+func (cpu *CPU) subR32RM32() {
+	reg := &cpu.X86registers
+	var modrm ModRM
+	reg.EIP += 1
+	modrm.parse(cpu)
+	r32 := modrm.getR32(cpu)
+	rm32 := modrm.getRM32(cpu)
+	result := uint64(r32) - uint64(rm32)
+	modrm.setR32(cpu, uint32(result))
+	reg.updateEflagsSub32(r32, rm32, result)
+}
+
 func (cpu *CPU) subAXImm16() {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
@@ -283,6 +331,17 @@ func (cpu *CPU) subRM32Imm32(modrm *ModRM) {
 	imm32 := int32(mem.GetSignCode32(0))
 	reg.EIP += 4
 	modrm.setRM32(cpu, uint32(rm32-imm32))
+}
+
+func (cpu *CPU) subRM16Imm8(modrm *ModRM) {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	rm16 := modrm.getRM16(cpu)
+	imm8 := mem.GetSignCode8(0)
+	reg.EIP += 1
+	result := uint32(rm16) - uint32(imm8)
+	modrm.setRM16(cpu, uint16(result))
+	reg.updateEflagsSub16(rm16, uint16(imm8), result)
 }
 
 func (cpu *CPU) subRM32Imm8(modrm *ModRM) {

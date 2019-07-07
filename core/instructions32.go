@@ -36,9 +36,9 @@ func (cpu *CPU) createTable32() {
 	// cpu.Instr32[0x25] = cpu.andEAXImm32
 
 	// cpu.Instr32[0x28] = cpu.subRM8R8
-	// cpu.Instr32[0x29] = cpu.subRM32R32
+	cpu.Instr32[0x29] = cpu.subRM32R32
 	// cpu.Instr32[0x2a] = cpu.subR8RM8
-	// cpu.Instr32[0x2b] = cpu.subR32RM32
+	cpu.Instr32[0x2b] = cpu.subR32RM32
 	// cpu.Instr32[0x2c] = cpu.subALImm8
 	cpu.Instr32[0x2d] = cpu.subEAXImm32
 

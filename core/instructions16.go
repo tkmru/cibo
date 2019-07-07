@@ -36,9 +36,9 @@ func (cpu *CPU) createTable16() {
 	// cpu.Instr16[0x25] = cpu.andAXImm16
 
 	// cpu.Instr16[0x28] = cpu.subRM8R8
-	// cpu.Instr16[0x29] = cpu.subRM16R16
+	cpu.Instr16[0x29] = cpu.subRM16R16
 	// cpu.Instr16[0x2a] = cpu.subR8RM8
-	// cpu.Instr16[0x2b] = cpu.subR16RM16
+	cpu.Instr16[0x2b] = cpu.subR16RM16
 	// cpu.Instr16[0x2c] = cpu.subALImm8
 	cpu.Instr16[0x2d] = cpu.subAXImm16
 
@@ -231,7 +231,7 @@ func (cpu *CPU) code83b16() {
 	case 4:
 		//cpu.andRM16Imm8(&modrm)
 	case 5:
-		//cpu.subRM16Imm8(&modrm)
+		cpu.subRM16Imm8(&modrm)
 	case 6:
 		//cpu.xorRM16Imm8(&modrm)
 	case 7:
