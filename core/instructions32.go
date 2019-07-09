@@ -42,11 +42,12 @@ func (cpu *CPU) createTable32() {
 	// cpu.Instr32[0x2c] = cpu.subALImm8
 	cpu.Instr32[0x2d] = cpu.subEAXImm32
 
-	// cpu.Instr32[0x31] = cpu.xorRM32R32
+	// cpu.Instr32[0x30] = cpu.xorRM8R8
+	cpu.Instr32[0x31] = cpu.xorRM32R32
 	// cpu.Instr32[0x32] = cpu.xorR8RM8
-	// cpu.Instr32[0x33] = cpu.xorR32RM32
+	cpu.Instr32[0x33] = cpu.xorR32RM32
 	// cpu.Instr32[0x34] = cpu.xorALImm8
-	// cpu.Instr32[0x35] = cpu.xorEAXImm32
+	cpu.Instr32[0x35] = cpu.xorEAXImm32
 
 	cpu.Instr32[0x3b] = cpu.cmpR32RM32
 	cpu.Instr32[0x3c] = cpu.cmpALImm8
@@ -70,7 +71,9 @@ func (cpu *CPU) createTable32() {
 
 	cpu.Instr32[0x66] = cpu.overrideOperandTo16
 	cpu.Instr32[0x68] = cpu.push32Imm32
+	// cpu.Instr32[0x69] = cpu.imulR32RM32Imm32
 	cpu.Instr32[0x6a] = cpu.push32Imm8
+	// cpu.Instr32[0x6b] = cpu.imulR32RM32Imm8
 
 	cpu.Instr32[0x70] = cpu.joRel8
 	cpu.Instr32[0x71] = cpu.jnoRel8
@@ -84,13 +87,19 @@ func (cpu *CPU) createTable32() {
 	cpu.Instr32[0x7e] = cpu.jleRel8
 	cpu.Instr32[0x81] = cpu.code81b32
 	cpu.Instr32[0x83] = cpu.code83b32
-
+	// cpu.Instr32[0x84] = cpu.testRM8R8
+	// cpu.Instr32[0x85] = cpu.testRM32R32
+	// cpu.Instr32[0x86] = cpu.xchgR8RM8
+	// cpu.Instr32[0x87] = cpu.xchgR32RM32
 	cpu.Instr32[0x88] = cpu.movRM8R8
 	cpu.Instr32[0x89] = cpu.movRM32R32
 	cpu.Instr32[0x8a] = cpu.movR8RM8
 	cpu.Instr32[0x8b] = cpu.movR32RM32
 
 	cpu.Instr32[0x90] = cpu.nop
+
+	// cpu.Instr32[0xa8] = cpu.testALImm8
+	// cpu.Instr32[0xa9] = cpu.testEAXImm32
 
 	for i := 0; i < 8; i++ {
 		cpu.Instr32[0xb0+i] = cpu.movR8Imm8

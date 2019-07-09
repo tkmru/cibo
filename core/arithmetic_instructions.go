@@ -355,6 +355,64 @@ func (cpu *CPU) subRM32Imm8(modrm *ModRM) {
 	reg.updateEflagsSub32(rm32, uint32(imm8), result)
 }
 
+func (cpu *CPU) xorRM16R16() {
+	reg := &cpu.X86registers
+	var modrm ModRM
+	reg.EIP += 1
+	modrm.parse(cpu)
+	rm16 := modrm.getRM16(cpu)
+	r16 := modrm.getR16(cpu)
+	modrm.setRM16(cpu, rm16 ^ r16)
+}
+
+func (cpu *CPU) xorRM32R32() {
+	reg := &cpu.X86registers
+	var modrm ModRM
+	reg.EIP += 1
+	modrm.parse(cpu)
+	rm32 := modrm.getRM32(cpu)
+	r32 := modrm.getR32(cpu)
+	modrm.setRM32(cpu, rm32 ^ r32)
+}
+
+func (cpu *CPU) xorR16RM16() {
+	reg := &cpu.X86registers
+	var modrm ModRM
+	reg.EIP += 1
+	modrm.parse(cpu)
+	r16 := modrm.getR16(cpu)
+	rm16 := modrm.getRM16(cpu)
+	modrm.setR16(cpu, r16 ^ rm16)
+}
+
+func (cpu *CPU) xorR32RM32() {
+	reg := &cpu.X86registers
+	var modrm ModRM
+	reg.EIP += 1
+	modrm.parse(cpu)
+	r32 := modrm.getR32(cpu)
+	rm32 := modrm.getRM32(cpu)
+	modrm.setR32(cpu, r32 ^ rm32)
+}
+
+func (cpu *CPU) xorAXImm16() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	imm16 := mem.GetCode16(1)
+	base := reg.EAX
+	reg.EAX = base ^ uint32(imm16)
+	reg.EIP += 3
+}
+
+func (cpu *CPU) xorEAXImm32() {
+	reg := &cpu.X86registers
+	mem := cpu.Memory
+	imm32 := mem.GetCode32(1)
+	base := reg.EAX
+	reg.EAX = base ^ imm32
+	reg.EIP += 5
+}
+
 func (cpu *CPU) cmpRM16Imm8(modrm *ModRM) {
 	reg := &cpu.X86registers
 	mem := cpu.Memory
