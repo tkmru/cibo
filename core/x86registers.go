@@ -158,65 +158,6 @@ func (r *X86registers) Set8ByIndex(index uint8, value uint8) {
 	}
 }
 
-func (r *X86registers) updateEflagsSub16(v1 uint16, v2 uint16, result uint32) {
-	var sign1 int = int(v1 >> 15)
-	var sign2 int = int(v2 >> 15)
-	var signr int = int((result >> 15) & 1)
-
-	if (result >> 32) == 1 {
-		r.SetCF()
-	} else {
-		r.RemoveCF()
-	}
-
-	if result == 0 {
-		r.SetZF()
-	} else {
-		r.RemoveZF()
-	}
-
-	if signr == 1 {
-		r.SetSF()
-	} else {
-		r.RemoveSF()
-	}
-
-	if (sign1^sign2 == 1) && (sign1^signr == 1) {
-		r.SetOF()
-	} else {
-		r.RemoveOF()
-	}
-}
-
-func (r *X86registers) updateEflagsSub32(v1 uint32, v2 uint32, result uint64) {
-	var sign1 int = int(v1 >> 31)
-	var sign2 int = int(v2 >> 31)
-	var signr int = int((result >> 31) & 1)
-
-	if (result >> 32) == 1 {
-		r.SetCF()
-	} else {
-		r.RemoveCF()
-	}
-
-	if result == 0 {
-		r.SetZF()
-	} else {
-		r.RemoveZF()
-	}
-
-	if signr == 1 {
-		r.SetSF()
-	} else {
-		r.RemoveSF()
-	}
-
-	if (sign1^sign2 == 1) && (sign1^signr == 1) {
-		r.SetOF()
-	} else {
-		r.RemoveOF()
-	}
-}
 
 func (r *X86registers) updateEflagsAdd16(v1 uint16, v2 uint16, result uint32) {
 	var sign1 int = int(v1 >> 15)
@@ -274,6 +215,182 @@ func (r *X86registers) updateEflagsAdd32(v1 uint32, v2 uint32, result uint64) {
 	if (sign1^sign2 == 0) && (sign1^signr == 1) {
 		r.SetOF()
 	} else {
+		r.RemoveOF()
+	}
+}
+
+func (r *X86registers) updateEflagsOr16(result uint16) {
+	r.RemoveCF()
+	
+	if result == 0 {
+		r.SetZF()
+	} else {
+		r.RemoveZF()
+	}
+
+	if ((result >> 15) & 1) == 1 {
+		r.SetSF()
+	} else {
+		r.RemoveSF()
+	}
+
+	r.RemoveOF()
+}
+
+func (r *X86registers) updateEflagsOr32(result uint32) {
+	r.RemoveCF()
+	
+	if result == 0 {
+		r.SetZF()
+	} else {
+		r.RemoveZF()
+	}
+
+	if ((result >> 31) & 1) == 1 {
+		r.SetSF()
+	} else {
+		r.RemoveSF()
+	}
+
+	r.RemoveOF()
+}
+
+func (r *X86registers) updateEflagsAnd16(result uint16) {
+	r.RemoveCF()
+	
+	if result == 0 {
+		r.SetZF()
+	} else {
+		r.RemoveZF()
+	}
+
+	if ((result >> 15) & 1) == 1 {
+		r.SetSF()
+	} else {
+		r.RemoveSF()
+	}
+
+	r.RemoveOF()
+}
+
+func (r *X86registers) updateEflagsAnd32(result uint32) {
+	r.RemoveCF()
+	
+	if result == 0 {
+		r.SetZF()
+	} else {
+		r.RemoveZF()
+	}
+
+	if ((result >> 31) & 1) == 1 {
+		r.SetSF()
+	} else {
+		r.RemoveSF()
+	}
+
+	r.RemoveOF()
+}
+
+func (r *X86registers) updateEflagsSub16(v1 uint16, v2 uint16, result uint32) {
+	var sign1 int = int(v1 >> 15)
+	var sign2 int = int(v2 >> 15)
+	var signr int = int((result >> 15) & 1)
+
+	if (result >> 16) == 1 {
+		r.SetCF()
+	} else {
+		r.RemoveCF()
+	}
+
+	if result == 0 {
+		r.SetZF()
+	} else {
+		r.RemoveZF()
+	}
+
+	if signr == 1 {
+		r.SetSF()
+	} else {
+		r.RemoveSF()
+	}
+
+	if (sign1^sign2 == 1) && (sign1^signr == 1) {
+		r.SetOF()
+	} else {
+		r.RemoveOF()
+	}
+}
+
+func (r *X86registers) updateEflagsSub32(v1 uint32, v2 uint32, result uint64) {
+	var sign1 int = int(v1 >> 31)
+	var sign2 int = int(v2 >> 31)
+	var signr int = int((result >> 31) & 1)
+
+	if (result >> 32) == 1 {
+		r.SetCF()
+	} else {
+		r.RemoveCF()
+	}
+
+	if result == 0 {
+		r.SetZF()
+	} else {
+		r.RemoveZF()
+	}
+
+	if signr == 1 {
+		r.SetSF()
+	} else {
+		r.RemoveSF()
+	}
+
+	if (sign1^sign2 == 1) && (sign1^signr == 1) {
+		r.SetOF()
+	} else {
+		r.RemoveOF()
+	}
+}
+
+func (r *X86registers) updateEflagsMul16(result uint64) {
+	msb := result >> 16
+	if msb > 0 {
+		r.SetCF()
+		r.SetOF()
+	} else {
+		r.RemoveCF()
+		r.RemoveOF()
+	}
+}
+
+func (r *X86registers) updateEflagsMul32(result uint64) {
+	msb := result >> 32
+	if msb > 0 {
+		r.SetCF()
+		r.SetOF()
+	} else {
+		r.RemoveCF()
+		r.RemoveOF()
+	}
+}
+
+func (r *X86registers) updateEflagsImul16(result uint64) {
+	msb := result >> 16
+	if int(msb) != -1 {
+		r.SetCF()
+		r.SetOF()
+	} else {
+		r.RemoveCF()
+		r.RemoveOF()
+	}
+}
+
+func (r *X86registers) updateEflagsImul32(result uint64) {
+	msb := result >> 32
+	if int(msb) != -1 {
+		r.SetCF()
+		r.SetOF()
+	} else {
+		r.RemoveCF()
 		r.RemoveOF()
 	}
 }
